@@ -1,0 +1,152 @@
+package com.outlier.samplespace.game
+
+import kotlin.random.Random
+
+enum class Role {
+    CIVILIAN,
+    UNDERCOVER,
+    MR_WHITE
+}
+
+enum class Winner {
+    NONE,
+    CIVILIANS,
+    OUTLIERS,
+    MR_WHITE
+}
+
+data class GameConfig(
+    val playerCount: Int,
+    val undercoverCount: Int,
+    val mrWhiteCount: Int
+)
+
+data class WordPair(
+    val category: String,
+    val civilianWord: String,
+    val undercoverWord: String
+)
+
+data class AssignedRole(
+    val playerName: String,
+    val role: Role,
+    val word: String?
+)
+
+data class VoteResolution(
+    val eliminatedPlayer: String?,
+    val tiedPlayers: List<String>
+)
+
+fun validateConfig(config: GameConfig): String? {
+    if (config.playerCount !in 4..15) {
+        return "Player count must be between 4 and 15."
+    }
+    if (config.undercoverCount < 1) {
+        return "At least one undercover is required."
+    }
+    if (config.mrWhiteCount < 0) {
+        return "Mr White count cannot be negative."
+    }
+    val civilians = config.playerCount - config.undercoverCount - config.mrWhiteCount
+    if (civilians < 2) {
+        return "At least two civilians are required."
+    }
+    return null
+}
+
+fun validatePlayerNames(playerNames: List<String>): String? {
+    if (playerNames.isEmpty()) {
+        return "At least one player is required."
+    }
+    if (playerNames.any { it.isBlank() }) {
+        return "Player names must be non-blank and unique."
+    }
+    val normalized = playerNames.map { it.trim().lowercase() }
+    if (normalized.distinct().size != normalized.size) {
+        return "Player names must be non-blank and unique."
+    }
+    return null
+}
+
+fun assignRoles(
+    playerNames: List<String>,
+    config: GameConfig,
+    pair: WordPair,
+    random: Random = Random.Default
+): List<AssignedRole> {
+    val configError = validateConfig(config)
+    require(configError == null) { configError ?: "Invalid game config." }
+    val namesError = validatePlayerNames(playerNames)
+    require(namesError == null) { namesError ?: "Invalid player names." }
+    require(playerNames.size == config.playerCount) {
+        "Expected ${config.playerCount} players, got ${playerNames.size}."
+    }
+
+    val shuffledNames = playerNames.shuffled(random)
+    val mrWhiteNames = shuffledNames.take(config.mrWhiteCount).toSet()
+    val undercoverNames = shuffledNames
+        .drop(config.mrWhiteCount)
+        .take(config.undercoverCount)
+        .toSet()
+
+    return playerNames.map { name ->
+        when {
+            mrWhiteNames.contains(name) -> AssignedRole(
+                playerName = name,
+                role = Role.MR_WHITE,
+                word = null
+            )
+
+            undercoverNames.contains(name) -> AssignedRole(
+                playerName = name,
+                role = Role.UNDERCOVER,
+                word = pair.undercoverWord
+            )
+
+            else -> AssignedRole(
+                playerName = name,
+                role = Role.CIVILIAN,
+                word = pair.civilianWord
+            )
+        }
+    }
+}
+
+fun resolveVotes(votes: Map<String, String>): VoteResolution {
+    if (votes.isEmpty()) {
+        return VoteResolution(eliminatedPlayer = null, tiedPlayers = emptyList())
+    }
+    val counts = votes.values.groupingBy { it }.eachCount()
+    val maxCount = counts.values.maxOrNull() ?: 0
+    val topPlayers = counts
+        .filterValues { it == maxCount }
+        .keys
+        .sorted()
+
+    return if (topPlayers.size == 1) {
+        VoteResolution(eliminatedPlayer = topPlayers.first(), tiedPlayers = emptyList())
+    } else {
+        VoteResolution(eliminatedPlayer = null, tiedPlayers = topPlayers)
+    }
+}
+
+fun determineWinner(
+    aliveRoles: List<Role>,
+    mrWhiteGuessedWord: Boolean
+): Winner {
+    if (mrWhiteGuessedWord) {
+        return Winner.MR_WHITE
+    }
+
+    val civilians = aliveRoles.count { it == Role.CIVILIAN }
+    val outliers = aliveRoles.count { it == Role.UNDERCOVER || it == Role.MR_WHITE }
+
+    if (outliers == 0) {
+        return Winner.CIVILIANS
+    }
+    if (outliers >= civilians) {
+        return Winner.OUTLIERS
+    }
+    return Winner.NONE
+}
