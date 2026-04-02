@@ -9,8 +9,23 @@ import org.junit.Test
 class GameRulesTest {
 
     @Test
-    fun validateConfig_acceptsValidConfiguration() {
-        val config = GameConfig(playerCount = 8, undercoverCount = 2, mrWhiteCount = 1)
+    fun maxUndercoverCount_followsFormula() {
+        assertEquals(1, maxUndercoverCount(4))
+        assertEquals(1, maxUndercoverCount(5))
+        assertEquals(2, maxUndercoverCount(6))
+        assertEquals(6, maxUndercoverCount(15))
+    }
+
+    @Test
+    fun maxMrWhiteCount_followsFormula() {
+        assertEquals(0, maxMrWhiteCount(1))
+        assertEquals(1, maxMrWhiteCount(2))
+        assertEquals(5, maxMrWhiteCount(6))
+    }
+
+    @Test
+    fun validateConfig_acceptsBoundaryValidConfiguration() {
+        val config = GameConfig(playerCount = 8, undercoverCount = 3, mrWhiteCount = 2)
 
         val error = validateConfig(config)
 
@@ -18,12 +33,21 @@ class GameRulesTest {
     }
 
     @Test
-    fun validateConfig_rejectsTooManyOutliers() {
-        val config = GameConfig(playerCount = 6, undercoverCount = 3, mrWhiteCount = 2)
+    fun validateConfig_rejectsUndercoverAboveCap() {
+        val config = GameConfig(playerCount = 8, undercoverCount = 4, mrWhiteCount = 0)
 
         val error = validateConfig(config)
 
-        assertEquals("At least two civilians are required.", error)
+        assertEquals("Undercovers must be between 1 and 3 for 8 players.", error)
+    }
+
+    @Test
+    fun validateConfig_rejectsMrWhiteAboveCap() {
+        val config = GameConfig(playerCount = 10, undercoverCount = 3, mrWhiteCount = 3)
+
+        val error = validateConfig(config)
+
+        assertEquals("Mr White must be between 0 and 2 when undercovers are 3.", error)
     }
 
     @Test
@@ -39,16 +63,6 @@ class GameRulesTest {
         assertEquals(1, assigned.count { it.role == Role.MR_WHITE })
         assertEquals(3, assigned.count { it.role == Role.CIVILIAN })
         assertEquals(1, assigned.count { it.role == Role.MR_WHITE && it.word == null })
-    }
-
-    @Test
-    fun resolveVotes_returnsTieWhenTopVotesMatch() {
-        val votes = mapOf("A" to "B", "B" to "A", "C" to "A", "D" to "B")
-
-        val result = resolveVotes(votes)
-
-        assertEquals(null, result.eliminatedPlayer)
-        assertEquals(listOf("A", "B"), result.tiedPlayers)
     }
 
     @Test

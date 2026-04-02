@@ -38,16 +38,29 @@ data class VoteResolution(
     val tiedPlayers: List<String>
 )
 
+fun maxUndercoverCount(playerCount: Int): Int = (playerCount / 2) - 1
+
+fun maxMrWhiteCount(undercoverCount: Int): Int = undercoverCount - 1
+
 fun validateConfig(config: GameConfig): String? {
     if (config.playerCount !in 4..15) {
         return "Player count must be between 4 and 15."
     }
-    if (config.undercoverCount < 1) {
-        return "At least one undercover is required."
+
+    val undercoverCap = maxUndercoverCount(config.playerCount)
+    if (config.undercoverCount !in 1..undercoverCap) {
+        return "Undercovers must be between 1 and $undercoverCap for ${config.playerCount} players."
     }
+
     if (config.mrWhiteCount < 0) {
         return "Mr White count cannot be negative."
     }
+
+    val mrWhiteCap = maxMrWhiteCount(config.undercoverCount)
+    if (config.mrWhiteCount !in 0..mrWhiteCap) {
+        return "Mr White must be between 0 and $mrWhiteCap when undercovers are ${config.undercoverCount}."
+    }
+
     val civilians = config.playerCount - config.undercoverCount - config.mrWhiteCount
     if (civilians < 2) {
         return "At least two civilians are required."

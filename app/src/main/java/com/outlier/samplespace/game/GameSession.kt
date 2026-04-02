@@ -6,7 +6,7 @@ enum class GamePhase {
     SETUP,
     ROLE_REVEAL,
     CLUE_ROUND,
-    VOTING,
+    ELIMINATION,
     MR_WHITE_GUESS,
     GAME_OVER
 }
@@ -19,10 +19,7 @@ data class GameState(
     val revealIndex: Int = 0,
     val roundNumber: Int = 0,
     val alivePlayers: List<String> = emptyList(),
-    val voteOrder: List<String> = emptyList(),
-    val currentVoteIndex: Int = 0,
-    val votes: Map<String, String> = emptyMap(),
-    val tiedPlayers: List<String> = emptyList(),
+    val selectedEliminationTarget: String? = null,
     val pendingMrWhitePlayer: String? = null,
     val winner: Winner = Winner.NONE,
     val lastEliminatedPlayer: String? = null
@@ -66,97 +63,60 @@ class GameSession(private val random: Random = Random.Default) {
         }
     }
 
-    fun beginVoting(state: GameState): GameState {
-        require(state.phase == GamePhase.CLUE_ROUND) { "Voting can begin only from clue round." }
-        val alive = state.alivePlayers
-        require(alive.size >= 2) { "Need at least two players alive to vote." }
+    fun beginElimination(state: GameState): GameState {
+        require(state.phase == GamePhase.CLUE_ROUND) { "Elimination can begin only from clue round." }
+        require(state.alivePlayers.size >= 2) { "Need at least two players alive to eliminate." }
         return state.copy(
-            phase = GamePhase.VOTING,
-            voteOrder = alive,
-            currentVoteIndex = 0,
-            votes = emptyMap(),
-            tiedPlayers = emptyList()
+            phase = GamePhase.ELIMINATION,
+            selectedEliminationTarget = null
         )
     }
 
-    fun currentVoter(state: GameState): String? {
-        if (state.phase != GamePhase.VOTING) return null
-        if (state.currentVoteIndex !in state.voteOrder.indices) return null
-        return state.voteOrder[state.currentVoteIndex]
+    fun selectEliminationTarget(state: GameState, target: String): GameState {
+        require(state.phase == GamePhase.ELIMINATION) { "Elimination selection is not active." }
+        require(target in state.alivePlayers) { "Elimination target must be alive." }
+        return state.copy(selectedEliminationTarget = target)
     }
 
-    fun castVoteForCurrentVoter(state: GameState, target: String): GameState {
-        require(state.phase == GamePhase.VOTING) { "Voting is not active." }
-        val voter = currentVoter(state) ?: throw IllegalStateException("No current voter available.")
-        require(target in state.alivePlayers) { "Vote target must be alive." }
-        require(target != voter) { "Self-vote is not allowed." }
-
-        val nextVotes = state.votes + (voter to target)
-        val nextIndex = state.currentVoteIndex + 1
-        return state.copy(votes = nextVotes, currentVoteIndex = nextIndex)
-    }
-
-    fun resolveVoting(state: GameState): GameState {
-        require(state.phase == GamePhase.VOTING) { "Voting is not active." }
-        require(state.votes.size == state.voteOrder.size) { "All alive players must vote before resolving." }
-
-        val result = resolveVotes(state.votes)
-        if (result.tiedPlayers.isNotEmpty()) {
-            return state.copy(
-                phase = GamePhase.CLUE_ROUND,
-                roundNumber = state.roundNumber + 1,
-                votes = emptyMap(),
-                voteOrder = emptyList(),
-                currentVoteIndex = 0,
-                tiedPlayers = result.tiedPlayers
-            )
-        }
-
-        val eliminated = result.eliminatedPlayer
-            ?: throw IllegalStateException("Expected eliminated player when no tie exists.")
+    fun confirmElimination(state: GameState): GameState {
+        require(state.phase == GamePhase.ELIMINATION) { "Elimination is not active." }
+        val eliminated = state.selectedEliminationTarget
+            ?: throw IllegalStateException("Select a player before elimination.")
         val assignment = state.assignments.firstOrNull { it.playerName == eliminated }
             ?: throw IllegalStateException("Eliminated player assignment not found.")
         val nextAlive = state.alivePlayers.filterNot { it == eliminated }
-        val winner = determineWinner(
-            aliveRoles = state.assignments.filter { it.playerName in nextAlive }.map { it.role },
-            mrWhiteGuessedWord = false
-        )
 
         if (assignment.role == Role.MR_WHITE) {
             return state.copy(
                 phase = GamePhase.MR_WHITE_GUESS,
                 alivePlayers = nextAlive,
                 pendingMrWhitePlayer = eliminated,
+                selectedEliminationTarget = null,
                 lastEliminatedPlayer = eliminated,
-                votes = emptyMap(),
-                voteOrder = emptyList(),
-                currentVoteIndex = 0,
-                tiedPlayers = emptyList(),
                 winner = Winner.NONE
             )
         }
+
+        val winner = determineWinner(
+            aliveRoles = state.assignments.filter { it.playerName in nextAlive }.map { it.role },
+            mrWhiteGuessedWord = false
+        )
 
         return if (winner != Winner.NONE) {
             state.copy(
                 phase = GamePhase.GAME_OVER,
                 alivePlayers = nextAlive,
                 winner = winner,
-                lastEliminatedPlayer = eliminated,
-                votes = emptyMap(),
-                voteOrder = emptyList(),
-                currentVoteIndex = 0,
-                tiedPlayers = emptyList()
+                selectedEliminationTarget = null,
+                lastEliminatedPlayer = eliminated
             )
         } else {
             state.copy(
                 phase = GamePhase.CLUE_ROUND,
                 alivePlayers = nextAlive,
                 roundNumber = state.roundNumber + 1,
-                lastEliminatedPlayer = eliminated,
-                votes = emptyMap(),
-                voteOrder = emptyList(),
-                currentVoteIndex = 0,
-                tiedPlayers = emptyList()
+                selectedEliminationTarget = null,
+                lastEliminatedPlayer = eliminated
             )
         }
     }

@@ -35,4 +35,14 @@ class WordBankTest {
 
         assertTrue(!hasNumbers)
     }
+
+    @Test
+    fun generatedPairs_useShortNaturalTerms() {
+        val hasLongPhrases = WordBank.allPairs.any {
+            it.civilianWord.trim().split("\\s+".toRegex()).size > 2 ||
+                it.undercoverWord.trim().split("\\s+".toRegex()).size > 2
+        }
+
+        assertTrue(!hasLongPhrases)
+    }
 }
