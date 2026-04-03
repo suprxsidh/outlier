@@ -9,8 +9,8 @@ Outlier is a fully offline, Android-only social deduction game inspired by under
 
 ## Download APK
 
-- Latest signed APK (stable link):
-  - `https://github.com/suprxsidh/outlier/releases/latest/download/outlier-latest-release.apk`
+- Signed APK (stable filename):
+  - `https://github.com/suprxsidh/outlier/releases/latest/download/outlier-v1.1.0-release.apk`
 - Release page:
   - `https://github.com/suprxsidh/outlier/releases/latest`
 
