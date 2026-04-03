@@ -7,20 +7,31 @@ enum class GamePhase {
     ROLE_REVEAL,
     CLUE_ROUND,
     ELIMINATION,
+    POST_ELIMINATION_ANNOUNCEMENT,
     MR_WHITE_GUESS,
     GAME_OVER
 }
+
+data class EliminationAnnouncement(
+    val eliminatedPlayer: String,
+    val eliminatedRole: Role,
+    val civiliansLeft: Int,
+    val undercoversLeft: Int,
+    val mrWhitesLeft: Int
+)
 
 data class GameState(
     val phase: GamePhase = GamePhase.SETUP,
     val config: GameConfig? = null,
     val pair: WordPair? = null,
     val assignments: List<AssignedRole> = emptyList(),
+    val revealOrder: List<String> = emptyList(),
     val revealIndex: Int = 0,
     val roundNumber: Int = 0,
     val alivePlayers: List<String> = emptyList(),
     val selectedEliminationTarget: String? = null,
     val pendingMrWhitePlayer: String? = null,
+    val eliminationAnnouncement: EliminationAnnouncement? = null,
     val winner: Winner = Winner.NONE,
     val lastEliminatedPlayer: String? = null
 )
@@ -41,23 +52,42 @@ class GameSession(private val random: Random = Random.Default) {
         }
 
         val assignments = assignRoles(playerNames, config, pair, random)
+        val revealOrder = buildRevealOrder(assignments)
+
         return GameState(
             phase = GamePhase.ROLE_REVEAL,
             config = config,
             pair = pair,
             assignments = assignments,
+            revealOrder = revealOrder,
             revealIndex = 0,
             roundNumber = 1,
             alivePlayers = playerNames
         )
     }
 
+    private fun buildRevealOrder(assignments: List<AssignedRole>): List<String> {
+        val mrWhiteNames = assignments.filter { it.role == Role.MR_WHITE }.map { it.playerName }.toSet()
+        val nonMrWhite = assignments.map { it.playerName }.filterNot { it in mrWhiteNames }
+
+        if (nonMrWhite.isEmpty()) {
+            return assignments.map { it.playerName }.shuffled(random)
+        }
+
+        val first = nonMrWhite.random(random)
+        val remaining = assignments.map { it.playerName }
+            .filterNot { it == first }
+            .shuffled(random)
+
+        return listOf(first) + remaining
+    }
+
     fun advanceReveal(state: GameState): GameState {
         require(state.phase == GamePhase.ROLE_REVEAL) { "Reveal is not active." }
 
         val nextIndex = state.revealIndex + 1
-        return if (nextIndex >= state.assignments.size) {
-            state.copy(phase = GamePhase.CLUE_ROUND, revealIndex = state.assignments.size)
+        return if (nextIndex >= state.revealOrder.size) {
+            state.copy(phase = GamePhase.CLUE_ROUND, revealIndex = state.revealOrder.size)
         } else {
             state.copy(revealIndex = nextIndex)
         }
@@ -85,38 +115,65 @@ class GameSession(private val random: Random = Random.Default) {
         val assignment = state.assignments.firstOrNull { it.playerName == eliminated }
             ?: throw IllegalStateException("Eliminated player assignment not found.")
         val nextAlive = state.alivePlayers.filterNot { it == eliminated }
+        val announcement = buildAnnouncement(
+            assignments = state.assignments,
+            nextAlive = nextAlive,
+            eliminatedPlayer = eliminated,
+            eliminatedRole = assignment.role
+        )
 
-        if (assignment.role == Role.MR_WHITE) {
-            return state.copy(
-                phase = GamePhase.MR_WHITE_GUESS,
-                alivePlayers = nextAlive,
-                pendingMrWhitePlayer = eliminated,
-                selectedEliminationTarget = null,
-                lastEliminatedPlayer = eliminated,
-                winner = Winner.NONE
-            )
+        return state.copy(
+            phase = GamePhase.POST_ELIMINATION_ANNOUNCEMENT,
+            alivePlayers = nextAlive,
+            pendingMrWhitePlayer = if (assignment.role == Role.MR_WHITE) eliminated else null,
+            selectedEliminationTarget = null,
+            lastEliminatedPlayer = eliminated,
+            eliminationAnnouncement = announcement
+        )
+    }
+
+    private fun buildAnnouncement(
+        assignments: List<AssignedRole>,
+        nextAlive: List<String>,
+        eliminatedPlayer: String,
+        eliminatedRole: Role
+    ): EliminationAnnouncement {
+        val aliveRoles = assignments
+            .filter { it.playerName in nextAlive }
+            .map { it.role }
+
+        return EliminationAnnouncement(
+            eliminatedPlayer = eliminatedPlayer,
+            eliminatedRole = eliminatedRole,
+            civiliansLeft = aliveRoles.count { it == Role.CIVILIAN },
+            undercoversLeft = aliveRoles.count { it == Role.UNDERCOVER },
+            mrWhitesLeft = aliveRoles.count { it == Role.MR_WHITE }
+        )
+    }
+
+    fun continueAfterAnnouncement(state: GameState): GameState {
+        require(state.phase == GamePhase.POST_ELIMINATION_ANNOUNCEMENT) {
+            "Announcement is not active."
         }
 
         val winner = determineWinner(
-            aliveRoles = state.assignments.filter { it.playerName in nextAlive }.map { it.role },
+            aliveRoles = state.assignments.filter { it.playerName in state.alivePlayers }.map { it.role },
             mrWhiteGuessedWord = false
         )
 
-        return if (winner != Winner.NONE) {
-            state.copy(
+        if (winner != Winner.NONE) {
+            return state.copy(
                 phase = GamePhase.GAME_OVER,
-                alivePlayers = nextAlive,
-                winner = winner,
-                selectedEliminationTarget = null,
-                lastEliminatedPlayer = eliminated
+                winner = winner
             )
+        }
+
+        return if (state.pendingMrWhitePlayer != null) {
+            state.copy(phase = GamePhase.MR_WHITE_GUESS)
         } else {
             state.copy(
                 phase = GamePhase.CLUE_ROUND,
-                alivePlayers = nextAlive,
-                roundNumber = state.roundNumber + 1,
-                selectedEliminationTarget = null,
-                lastEliminatedPlayer = eliminated
+                roundNumber = state.roundNumber + 1
             )
         }
     }

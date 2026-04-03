@@ -2,6 +2,7 @@ package com.outlier.samplespace.ui
 
 import androidx.lifecycle.ViewModel
 import com.outlier.samplespace.game.AssignedRole
+import com.outlier.samplespace.game.EliminationAnnouncement
 import com.outlier.samplespace.game.GameConfig
 import com.outlier.samplespace.game.GamePhase
 import com.outlier.samplespace.game.GameSession
@@ -18,11 +19,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
+const val DEFAULT_PLAYER_COUNT = 7
+const val DEFAULT_UNDERCOVER_COUNT = 2
+const val DEFAULT_MR_WHITE_COUNT = 1
+
 data class SetupState(
-    val playerCount: Int = 6,
-    val undercoverCount: Int = 1,
-    val mrWhiteCount: Int = 0,
-    val playerNames: List<String> = defaultNames(6),
+    val playerCount: Int = DEFAULT_PLAYER_COUNT,
+    val undercoverCount: Int = DEFAULT_UNDERCOVER_COUNT,
+    val mrWhiteCount: Int = DEFAULT_MR_WHITE_COUNT,
+    val playerNames: List<String> = defaultNames(DEFAULT_PLAYER_COUNT),
     val selectedCategory: String = "All",
     val errorMessage: String? = null,
     val helperMessage: String? = null
@@ -220,6 +225,17 @@ class OutlierViewModel : ViewModel() {
         _uiState.value = _uiState.value.copy(game = next, transientMessage = null)
     }
 
+    fun continueAfterAnnouncement() {
+        val current = _uiState.value.game
+        val next = runCatching { session.continueAfterAnnouncement(current) }
+            .getOrElse {
+                _uiState.value = _uiState.value.copy(transientMessage = it.message ?: "Cannot continue yet")
+                return
+            }
+
+        _uiState.value = _uiState.value.copy(game = next, transientMessage = null)
+    }
+
     fun updateGuess(value: String) {
         _uiState.value = _uiState.value.copy(guessInput = value)
     }
@@ -232,9 +248,7 @@ class OutlierViewModel : ViewModel() {
     }
 
     fun resetToSetup() {
-        _uiState.value = OutlierUiState(
-            setup = _uiState.value.setup.copy(errorMessage = null, helperMessage = null)
-        )
+        _uiState.value = OutlierUiState(setup = SetupState())
     }
 
     fun clearTransientMessage() {
@@ -244,7 +258,14 @@ class OutlierViewModel : ViewModel() {
     fun revealAssignment(): AssignedRole? {
         val state = _uiState.value.game
         if (state.phase != GamePhase.ROLE_REVEAL) return null
-        return state.assignments.getOrNull(state.revealIndex)
+        val currentPlayer = state.revealOrder.getOrNull(state.revealIndex) ?: return null
+        return state.assignments.firstOrNull { it.playerName == currentPlayer }
+    }
+
+    fun currentRevealPlayer(): String? {
+        val state = _uiState.value.game
+        if (state.phase != GamePhase.ROLE_REVEAL) return null
+        return state.revealOrder.getOrNull(state.revealIndex)
     }
 
     fun winnerLabel(): String {
@@ -272,6 +293,8 @@ class OutlierViewModel : ViewModel() {
     }
 
     fun eliminationTarget(): String? = _uiState.value.game.selectedEliminationTarget
+
+    fun eliminationAnnouncement(): EliminationAnnouncement? = _uiState.value.game.eliminationAnnouncement
 
     private fun roleName(role: Role): String = when (role) {
         Role.CIVILIAN -> "Civilian"

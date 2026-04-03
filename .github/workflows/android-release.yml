@@ -40,9 +40,12 @@ jobs:
       - name: Rename release artifact
         run: |
           cp app/build/outputs/apk/release/app-release.apk "outlier-${GITHUB_REF_NAME}-release.apk"
+          cp app/build/outputs/apk/release/app-release.apk "outlier-latest-release.apk"
 
       - name: Generate checksum
-        run: sha256sum "outlier-${GITHUB_REF_NAME}-release.apk" > "outlier-${GITHUB_REF_NAME}-release.apk.sha256"
+        run: |
+          sha256sum "outlier-${GITHUB_REF_NAME}-release.apk" > "outlier-${GITHUB_REF_NAME}-release.apk.sha256"
+          sha256sum "outlier-latest-release.apk" > "outlier-latest-release.apk.sha256"
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
@@ -51,3 +54,5 @@ jobs:
           files: |
             outlier-${{ github.ref_name }}-release.apk
             outlier-${{ github.ref_name }}-release.apk.sha256
+            outlier-latest-release.apk
+            outlier-latest-release.apk.sha256

@@ -7,14 +7,30 @@ Outlier is a fully offline, Android-only social deduction game inspired by under
 - All gameplay data stays local on-device
 - APKs distributed through GitHub Actions and GitHub Releases
 
+## Download APK
+
+- Latest signed APK (stable link):
+  - `https://github.com/suprxsidh/outlier/releases/latest/download/outlier-latest-release.apk`
+- Release page:
+  - `https://github.com/suprxsidh/outlier/releases/latest`
+
 ## Features (MVP)
 
 - Single-device pass-and-play gameplay
+- Defaults to `7` players, `2` undercovers, `1` Mr White
 - Configurable player count (`4-15`)
 - Configurable undercover and Mr White counts
+- Randomized secret pick order with guaranteed non-Mr-White first picker
+- Post-elimination announcement shows only eliminated role + remaining role counts
 - Mr White gets one guess when eliminated
 - 650 family-friendly word pairs across multiple categories
 - Local-only game state during play
+
+## Asset attributions
+
+- Asset source inventory: `docs/legal/ASSET_SOURCES.md`
+- Third-party notices: `docs/legal/THIRD_PARTY_NOTICES.md`
+- Third-party licenses: `licenses/third_party/`
 
 ## Stack
 
