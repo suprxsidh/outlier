@@ -1,6 +1,7 @@
 package com.outlier.samplespace.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,11 +22,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.ManageSearch
+import androidx.compose.material.icons.filled.PersonSearch
+import androidx.compose.material.icons.filled.Policy
+import androidx.compose.material.icons.filled.TipsAndUpdates
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
@@ -42,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -70,7 +80,7 @@ fun OutlierApp(viewModel: OutlierViewModel = viewModel()) {
                 Brush.verticalGradient(
                     colors = listOf(
                         MaterialTheme.colorScheme.surface,
-                        MaterialTheme.colorScheme.surfaceContainerLowest,
+                        MaterialTheme.colorScheme.surfaceContainerLow,
                         MaterialTheme.colorScheme.surfaceContainer
                     )
                 )
@@ -82,8 +92,21 @@ fun OutlierApp(viewModel: OutlierViewModel = viewModel()) {
                 .background(
                     Brush.radialGradient(
                         colors = listOf(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.24f),
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.23f),
                             Color.Transparent
+                        )
+                    )
+                )
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            MaterialTheme.colorScheme.tertiary.copy(alpha = 0.08f)
                         )
                     )
                 )
@@ -138,7 +161,11 @@ fun OutlierApp(viewModel: OutlierViewModel = viewModel()) {
                 .align(Alignment.BottomCenter)
                 .padding(16.dp)
         ) { data ->
-            Snackbar(snackbarData = data)
+            Snackbar(
+                snackbarData = data,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                contentColor = MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }
@@ -160,15 +187,22 @@ private fun SetupScreen(viewModel: OutlierViewModel) {
     ) {
         item {
             HeroCard(
-                title = "Sample Space",
-                subtitle = "Find the Outliers"
+                title = "Case HQ",
+                subtitle = "Find the Outlier",
+                caption = "Build your squad, hide identities, and crack the case.",
+                icon = Icons.Filled.ManageSearch,
+                accent = MaterialTheme.colorScheme.primary
             )
         }
 
         item {
-            PanelCard(title = "Match Setup") {
+            PanelCard(
+                title = "Case Setup",
+                icon = Icons.Filled.Policy,
+                accent = MaterialTheme.colorScheme.tertiary
+            ) {
                 CounterRow(
-                    label = "Players",
+                    label = "Detectives",
                     value = setup.playerCount,
                     min = 4,
                     max = 15,
@@ -176,7 +210,7 @@ private fun SetupScreen(viewModel: OutlierViewModel) {
                     onIncrease = { viewModel.updatePlayerCount(setup.playerCount + 1) }
                 )
                 CounterRow(
-                    label = "Imposters",
+                    label = "Undercover",
                     value = setup.undercoverCount,
                     min = 1,
                     max = maxUndercover,
@@ -193,7 +227,7 @@ private fun SetupScreen(viewModel: OutlierViewModel) {
                 )
 
                 Text(
-                    text = "Limits: imposters <= $maxUndercover, Mr White <= $maxMrWhite",
+                    text = "Limits: undercover ≤ $maxUndercover, Mr White ≤ $maxMrWhite",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -201,27 +235,52 @@ private fun SetupScreen(viewModel: OutlierViewModel) {
                     Text(
                         text = it,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.secondary
                     )
                 }
             }
         }
 
         item {
-            PanelCard(title = "Word Category") {
+            PanelCard(
+                title = "Clue Board Category",
+                icon = Icons.Filled.TipsAndUpdates,
+                accent = MaterialTheme.colorScheme.secondary
+            ) {
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     viewModel.categories.forEach { category ->
+                        val selected = setup.selectedCategory == category
                         AssistChip(
                             onClick = { viewModel.updateCategory(category) },
-                            label = { Text(category) }
+                            label = { Text(category) },
+                            colors = AssistChipDefaults.assistChipColors(
+                                containerColor = if (selected) {
+                                    MaterialTheme.colorScheme.primaryContainer
+                                } else {
+                                    MaterialTheme.colorScheme.surfaceContainerLowest
+                                },
+                                labelColor = if (selected) {
+                                    MaterialTheme.colorScheme.onPrimaryContainer
+                                } else {
+                                    MaterialTheme.colorScheme.onSurface
+                                }
+                            ),
+                            border = BorderStroke(
+                                width = 1.dp,
+                                color = if (selected) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+                                }
+                            )
                         )
                     }
                 }
                 Text(
-                    text = "Selected: ${setup.selectedCategory}",
+                    text = "Selected board: ${setup.selectedCategory}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -229,7 +288,11 @@ private fun SetupScreen(viewModel: OutlierViewModel) {
         }
 
         item {
-            PanelCard(title = "Player Names") {
+            PanelCard(
+                title = "Suspect Roster",
+                icon = Icons.Filled.Groups,
+                accent = MaterialTheme.colorScheme.primary
+            ) {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     setup.playerNames.forEachIndexed { index, name ->
                         OutlinedTextField(
@@ -247,6 +310,7 @@ private fun SetupScreen(viewModel: OutlierViewModel) {
         setup.errorMessage?.let { message ->
             item {
                 Card(
+                    shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.errorContainer
                     )
@@ -266,50 +330,90 @@ private fun SetupScreen(viewModel: OutlierViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
             ) {
-                Text("Start Secret Reveal")
+                Icon(
+                    imageVector = Icons.Filled.ManageSearch,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Open Secret Case")
             }
         }
     }
 }
 
 @Composable
-private fun HeroCard(title: String, subtitle: String) {
+private fun HeroCard(
+    title: String,
+    subtitle: String,
+    caption: String,
+    icon: ImageVector,
+    accent: Color
+) {
     Card(
         shape = RoundedCornerShape(22.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+        border = androidx.compose.foundation.BorderStroke(1.dp, accent.copy(alpha = 0.4f))
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .background(
+                    Brush.horizontalGradient(
+                        colors = listOf(
+                            accent.copy(alpha = 0.24f),
+                            Color.Transparent
+                        )
+                    )
+                )
                 .padding(18.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.ExtraBold
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = accent,
+                    modifier = Modifier.size(28.dp)
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.ExtraBold
+                )
+            }
             Text(
                 text = subtitle,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                text = "Pass-and-play social deduction for local groups.",
+                text = caption,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.tertiary
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
 }
 
 @Composable
-private fun PanelCard(title: String, content: @Composable () -> Unit) {
+private fun PanelCard(
+    title: String,
+    icon: ImageVector,
+    accent: Color,
+    content: @Composable () -> Unit
+) {
     Card(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+        border = androidx.compose.foundation.BorderStroke(1.dp, accent.copy(alpha = 0.35f))
     ) {
         Column(
             modifier = Modifier
@@ -317,11 +421,20 @@ private fun PanelCard(title: String, content: @Composable () -> Unit) {
                 .padding(14.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = accent,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
             content()
         }
     }
@@ -353,7 +466,8 @@ private fun CounterRow(
                 text = value.toString(),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.width(34.dp),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.tertiary
             )
             Spacer(modifier = Modifier.width(12.dp))
             StepperButton(text = "+", enabled = value < max, onClick = onIncrease)
@@ -368,7 +482,11 @@ private fun StepperButton(text: String, enabled: Boolean, onClick: () -> Unit) {
         enabled = enabled,
         shape = CircleShape,
         modifier = Modifier.size(38.dp),
-        contentPadding = PaddingValues(0.dp)
+        contentPadding = PaddingValues(0.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+        )
     ) {
         Text(text, style = MaterialTheme.typography.titleLarge)
     }
@@ -392,27 +510,33 @@ private fun RevealScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Secret Reveal",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
+        HeroCard(
+            title = "Confidential Reveal",
+            subtitle = "Eyes only for one detective",
+            caption = "Keep this hidden and pass the device when done.",
+            icon = Icons.Filled.PersonSearch,
+            accent = MaterialTheme.colorScheme.secondary
         )
-        Text(
-            text = "Player ${state.revealIndex + 1} of ${state.revealOrder.size}",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Spacer(modifier = Modifier.height(18.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Card(
             shape = RoundedCornerShape(22.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+            border = androidx.compose.foundation.BorderStroke(
+                1.dp,
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)
+            )
         ) {
             Column(
                 modifier = Modifier.padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                Text(
+                    text = "Detective ${state.revealIndex + 1} of ${state.revealOrder.size}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
                 Text(
                     text = "Pass the device to",
                     style = MaterialTheme.typography.titleMedium,
@@ -427,12 +551,19 @@ private fun RevealScreen(
 
                 if (!revealShown) {
                     Text(
-                        text = "Tap reveal and keep this secret.",
+                        text = "Tap reveal and protect your identity.",
                         style = MaterialTheme.typography.bodySmall,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    Button(onClick = onReveal, shape = RoundedCornerShape(14.dp)) {
+                    Button(
+                        onClick = onReveal,
+                        shape = RoundedCornerShape(14.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        )
+                    ) {
                         Text("Reveal Secret")
                     }
                 } else {
@@ -444,10 +575,18 @@ private fun RevealScreen(
                     Text(
                         text = message,
                         style = MaterialTheme.typography.titleLarge,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.tertiary
                     )
-                    Button(onClick = onContinue, shape = RoundedCornerShape(14.dp)) {
-                        Text(if (isLast) "Start Round" else "Hide and Pass")
+                    Button(
+                        onClick = onContinue,
+                        shape = RoundedCornerShape(14.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            contentColor = MaterialTheme.colorScheme.onSecondary
+                        )
+                    ) {
+                        Text(if (isLast) "Begin Investigation" else "Hide and Pass")
                     }
                 }
             }
@@ -466,19 +605,32 @@ private fun ClueRoundScreen(state: GameState, onStartElimination: () -> Unit) {
     ) {
         item {
             HeroCard(
-                title = "Round ${state.roundNumber}",
-                subtitle = "Clue Phase"
+                title = "Investigation Round ${state.roundNumber}",
+                subtitle = "Clue Exchange",
+                caption = "Each surviving detective gives one clue.",
+                icon = Icons.Filled.TipsAndUpdates,
+                accent = MaterialTheme.colorScheme.tertiary
             )
         }
 
         item {
-            PanelCard(title = "Alive Players") {
+            PanelCard(
+                title = "Active Detectives",
+                icon = Icons.Filled.Groups,
+                accent = MaterialTheme.colorScheme.secondary
+            ) {
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     state.alivePlayers.forEach { player ->
-                        AssistChip(onClick = { }, label = { Text(player) })
+                        AssistChip(
+                            onClick = { },
+                            label = { Text(player) },
+                            colors = AssistChipDefaults.assistChipColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+                            )
+                        )
                     }
                 }
                 state.lastEliminatedPlayer?.let {
@@ -497,9 +649,19 @@ private fun ClueRoundScreen(state: GameState, onStartElimination: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
-                shape = RoundedCornerShape(14.dp)
+                shape = RoundedCornerShape(14.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
             ) {
-                Text("Proceed to Elimination")
+                Icon(
+                    imageVector = Icons.Filled.PersonSearch,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Move to Elimination")
             }
         }
     }
@@ -519,8 +681,11 @@ private fun EliminationScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         HeroCard(
-            title = "Elimination",
-            subtitle = "Select one player and confirm"
+            title = "Suspect Vote",
+            subtitle = "Who gets eliminated?",
+            caption = "Pick one suspect and confirm the arrest.",
+            icon = Icons.Filled.PersonSearch,
+            accent = MaterialTheme.colorScheme.error
         )
 
         LazyColumn(
@@ -535,17 +700,17 @@ private fun EliminationScreen(
                         .clip(RoundedCornerShape(16.dp))
                         .clickable { onSelectTarget(player) }
                         .border(
-                            width = if (selected) 2.dp else 0.dp,
+                            width = if (selected) 2.dp else 1.dp,
                             color = if (selected) {
-                                MaterialTheme.colorScheme.primary
+                                MaterialTheme.colorScheme.error
                             } else {
-                                Color.Transparent
+                                MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
                             },
                             shape = RoundedCornerShape(16.dp)
                         ),
                     colors = CardDefaults.cardColors(
                         containerColor = if (selected) {
-                            MaterialTheme.colorScheme.primaryContainer
+                            MaterialTheme.colorScheme.errorContainer
                         } else {
                             MaterialTheme.colorScheme.surfaceContainer
                         }
@@ -563,13 +728,13 @@ private fun EliminationScreen(
                             Box(
                                 modifier = Modifier
                                     .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.primary)
+                                    .background(MaterialTheme.colorScheme.error)
                                     .padding(horizontal = 10.dp, vertical = 4.dp)
                             ) {
                                 Text(
-                                    text = "Selected",
+                                    text = "Suspect",
                                     style = MaterialTheme.typography.labelLarge,
-                                    color = MaterialTheme.colorScheme.onPrimary
+                                    color = MaterialTheme.colorScheme.onError
                                 )
                             }
                         }
@@ -587,7 +752,7 @@ private fun EliminationScreen(
             shape = RoundedCornerShape(14.dp),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
         ) {
-            Text("Eliminate", color = MaterialTheme.colorScheme.onError)
+            Text("Confirm Elimination", color = MaterialTheme.colorScheme.onError)
         }
     }
 }
@@ -599,7 +764,7 @@ private fun AnnouncementScreen(
 ) {
     val roleLabel = when (announcement?.eliminatedRole) {
         Role.CIVILIAN -> "Civilian"
-        Role.UNDERCOVER -> "Imposter"
+        Role.UNDERCOVER -> "Undercover"
         Role.MR_WHITE -> "Mr White"
         null -> "Unknown"
     }
@@ -613,7 +778,11 @@ private fun AnnouncementScreen(
     ) {
         Card(
             shape = RoundedCornerShape(22.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh)
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+            border = androidx.compose.foundation.BorderStroke(
+                1.dp,
+                MaterialTheme.colorScheme.tertiary.copy(alpha = 0.4f)
+            )
         ) {
             Column(
                 modifier = Modifier
@@ -622,8 +791,14 @@ private fun AnnouncementScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
+                Icon(
+                    imageVector = Icons.Filled.Policy,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.tertiary,
+                    modifier = Modifier.size(28.dp)
+                )
                 Text(
-                    text = "Elimination Announcement",
+                    text = "Case Update",
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
@@ -636,15 +811,19 @@ private fun AnnouncementScreen(
                 )
 
                 CountLine("Civilians left", announcement?.civiliansLeft ?: 0)
-                CountLine("Imposters left", announcement?.undercoversLeft ?: 0)
-                CountLine("Mr Whites left", announcement?.mrWhitesLeft ?: 0)
+                CountLine("Undercover left", announcement?.undercoversLeft ?: 0)
+                CountLine("Mr White left", announcement?.mrWhitesLeft ?: 0)
 
                 Button(
                     onClick = onContinue,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp),
-                    shape = RoundedCornerShape(14.dp)
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary
+                    )
                 ) {
                     Text("Continue")
                 }
@@ -664,7 +843,8 @@ private fun CountLine(label: String, count: Int) {
         Text(
             text = count.toString(),
             style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.tertiary
         )
     }
 }
@@ -683,8 +863,11 @@ private fun MrWhiteGuessScreen(
         verticalArrangement = Arrangement.Center
     ) {
         HeroCard(
-            title = "Final Guess",
-            subtitle = "Guess the civilians' clue word"
+            title = "Mr White Final Guess",
+            subtitle = "One shot to flip the case",
+            caption = "Guess the civilians' clue word exactly.",
+            icon = Icons.Filled.TipsAndUpdates,
+            accent = MaterialTheme.colorScheme.tertiary
         )
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
@@ -695,7 +878,14 @@ private fun MrWhiteGuessScreen(
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(12.dp))
-        Button(onClick = onSubmitGuess, modifier = Modifier.fillMaxWidth()) {
+        Button(
+            onClick = onSubmitGuess,
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
+        ) {
             Text("Submit Guess")
         }
     }
@@ -717,20 +907,31 @@ private fun ResultScreen(
     ) {
         item {
             HeroCard(
-                title = "Game Over",
-                subtitle = winnerLabel
+                title = "Case Closed",
+                subtitle = winnerLabel,
+                caption = "Review the file and prep the next mystery.",
+                icon = Icons.Filled.Policy,
+                accent = MaterialTheme.colorScheme.secondary
             )
         }
 
         item {
-            PanelCard(title = "Match Summary") {
+            PanelCard(
+                title = "Case Summary",
+                icon = Icons.Filled.TipsAndUpdates,
+                accent = MaterialTheme.colorScheme.tertiary
+            ) {
                 Text(roleSummary)
                 Text("Rounds played: ${state.roundNumber}")
             }
         }
 
         item {
-            PanelCard(title = "Role Reveal") {
+            PanelCard(
+                title = "Full Role Reveal",
+                icon = Icons.Filled.Groups,
+                accent = MaterialTheme.colorScheme.primary
+            ) {
                 roleRevealLines.forEach { line ->
                     Text(
                         text = line,
@@ -746,7 +947,11 @@ private fun ResultScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
-                shape = RoundedCornerShape(14.dp)
+                shape = RoundedCornerShape(14.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
             ) {
                 Text("Back to Setup")
             }

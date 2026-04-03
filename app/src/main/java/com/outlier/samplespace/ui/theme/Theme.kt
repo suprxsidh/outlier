@@ -12,43 +12,63 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColors = darkColorScheme(
-    primary = Blue300,
-    onPrimary = ColorNavy,
-    primaryContainer = Blue700,
-    onPrimaryContainer = Blue100,
-    tertiary = Amber300,
-    onTertiary = ColorNavy,
-    surface = ColorNavy,
-    onSurface = Blue50,
-    surfaceContainer = Blue900,
-    surfaceContainerHigh = Blue800,
-    onSurfaceVariant = Blue200,
-    error = Red300,
-    onError = ColorNavy
+    primary = NeonBlue300,
+    onPrimary = Ink950,
+    primaryContainer = Ink700,
+    onPrimaryContainer = NeonBlue100,
+    secondary = Teal400,
+    onSecondary = Ink950,
+    secondaryContainer = Color(0xFF11413A),
+    onSecondaryContainer = Teal200,
+    tertiary = Gold300,
+    onTertiary = Ink950,
+    tertiaryContainer = Color(0xFF4D3514),
+    onTertiaryContainer = Gold300,
+    surface = Ink950,
+    onSurface = NeonBlue100,
+    surfaceContainerLowest = Color(0xFF0C1227),
+    surfaceContainerLow = Ink900,
+    surfaceContainer = Ink800,
+    surfaceContainerHigh = Ink700,
+    onSurfaceVariant = Slate200,
+    outline = Slate500,
+    error = Crimson300,
+    onError = Ink950,
+    errorContainer = Color(0xFF5B1F2A),
+    onErrorContainer = Color(0xFFFFD9DE)
 )
 
 private val LightColors = lightColorScheme(
-    primary = Blue700,
-    onPrimary = Blue50,
-    primaryContainer = Blue100,
-    onPrimaryContainer = Blue900,
-    tertiary = Amber500,
-    onTertiary = Blue900,
-    surface = Blue50,
-    onSurface = Blue900,
-    surfaceContainer = Color(0xFFE8EEFF),
-    surfaceContainerLow = Color(0xFFF3F6FF),
-    surfaceContainerLowest = Color(0xFFF8FAFF),
-    surfaceContainerHigh = Color(0xFFDDE6FF),
-    onSurfaceVariant = Color(0xFF3A4A73),
-    error = Red500,
-    onError = Blue50
+    primary = NeonBlue500,
+    onPrimary = Color.White,
+    primaryContainer = NeonBlue100,
+    onPrimaryContainer = Ink800,
+    secondary = Teal400,
+    onSecondary = Ink950,
+    secondaryContainer = Color(0xFFC7F9F0),
+    onSecondaryContainer = Color(0xFF05362F),
+    tertiary = Gold500,
+    onTertiary = Ink950,
+    tertiaryContainer = Color(0xFFFFEDC8),
+    onTertiaryContainer = Color(0xFF4E3600),
+    surface = Color(0xFFF4F6FF),
+    onSurface = Ink900,
+    surfaceContainerLowest = Color(0xFFFFFFFF),
+    surfaceContainerLow = Color(0xFFEEF2FF),
+    surfaceContainer = Color(0xFFE3E9FF),
+    surfaceContainerHigh = Color(0xFFD4DEFF),
+    onSurfaceVariant = Color(0xFF3B4A7B),
+    outline = Color(0xFF7A88B3),
+    error = Crimson500,
+    onError = Color.White,
+    errorContainer = Color(0xFFFFDADF),
+    onErrorContainer = Color(0xFF41000D)
 )
 
 @Composable
 fun OutlierTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
