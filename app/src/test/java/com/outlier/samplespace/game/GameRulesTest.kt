@@ -10,22 +10,22 @@ class GameRulesTest {
 
     @Test
     fun maxUndercoverCount_followsFormula() {
-        assertEquals(1, maxUndercoverCount(4))
-        assertEquals(1, maxUndercoverCount(5))
-        assertEquals(2, maxUndercoverCount(6))
-        assertEquals(6, maxUndercoverCount(15))
+        assertEquals(2, maxUndercoverCount(4))
+        assertEquals(2, maxUndercoverCount(5))
+        assertEquals(3, maxUndercoverCount(6))
+        assertEquals(7, maxUndercoverCount(15))
     }
 
     @Test
     fun maxMrWhiteCount_followsFormula() {
-        assertEquals(0, maxMrWhiteCount(1))
-        assertEquals(1, maxMrWhiteCount(2))
-        assertEquals(5, maxMrWhiteCount(6))
+        assertEquals(2, maxMrWhiteCount(4))
+        assertEquals(2, maxMrWhiteCount(5))
+        assertEquals(5, maxMrWhiteCount(10))
     }
 
     @Test
     fun validateConfig_acceptsBoundaryValidConfiguration() {
-        val config = GameConfig(playerCount = 8, undercoverCount = 3, mrWhiteCount = 2)
+        val config = GameConfig(playerCount = 8, undercoverCount = 4, mrWhiteCount = 2)
 
         val error = validateConfig(config)
 
@@ -34,20 +34,29 @@ class GameRulesTest {
 
     @Test
     fun validateConfig_rejectsUndercoverAboveCap() {
-        val config = GameConfig(playerCount = 8, undercoverCount = 4, mrWhiteCount = 0)
+        val config = GameConfig(playerCount = 8, undercoverCount = 5, mrWhiteCount = 0)
 
         val error = validateConfig(config)
 
-        assertEquals("Undercovers must be between 1 and 3 for 8 players.", error)
+        assertEquals("Undercovers must be between 1 and 4 for 8 players.", error)
     }
 
     @Test
     fun validateConfig_rejectsMrWhiteAboveCap() {
-        val config = GameConfig(playerCount = 10, undercoverCount = 3, mrWhiteCount = 3)
+        val config = GameConfig(playerCount = 10, undercoverCount = 3, mrWhiteCount = 6)
 
         val error = validateConfig(config)
 
-        assertEquals("Mr White must be between 0 and 2 when undercovers are 3.", error)
+        assertEquals("Mr White must be between 0 and 5 for 10 players.", error)
+    }
+
+    @Test
+    fun validateConfig_acceptsMrWhiteBasedOnPlayerHalf() {
+        val config = GameConfig(playerCount = 10, undercoverCount = 1, mrWhiteCount = 5)
+
+        val error = validateConfig(config)
+
+        assertNull(error)
     }
 
     @Test

@@ -181,8 +181,8 @@ private fun SetupScreen(viewModel: OutlierViewModel) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp),
-        contentPadding = PaddingValues(vertical = 20.dp),
+            .padding(horizontal = 20.dp),
+        contentPadding = PaddingValues(top = 20.dp, bottom = 28.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         item {
@@ -300,9 +300,15 @@ private fun SetupScreen(viewModel: OutlierViewModel) {
                             onValueChange = { viewModel.updatePlayerName(index, it) },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true,
-                            label = { Text("Player ${index + 1}") }
+                            label = { Text("Name") },
+                            placeholder = { Text("Player ${index + 1}") }
                         )
                     }
+                    Text(
+                        text = "Leave blank to keep default player labels.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
         }
@@ -600,7 +606,7 @@ private fun ClueRoundScreen(state: GameState, onStartElimination: () -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {
@@ -677,7 +683,7 @@ private fun EliminationScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         HeroCard(
@@ -902,7 +908,7 @@ private fun ResultScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {

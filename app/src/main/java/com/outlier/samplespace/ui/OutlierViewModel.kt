@@ -42,7 +42,9 @@ data class OutlierUiState(
 )
 
 private fun defaultNames(count: Int): List<String> =
-    (1..count).map { "Player $it" }
+    List(count) { "" }
+
+private fun fallbackName(index: Int): String = "Player ${index + 1}"
 
 class OutlierViewModel : ViewModel() {
     private val session = GameSession()
@@ -51,23 +53,39 @@ class OutlierViewModel : ViewModel() {
 
     val categories: List<String> = listOf("All") + WordBank.allPairs.map { it.category }.distinct().sorted()
 
-    fun maxUndercoverForCurrentSetup(): Int = maxUndercoverCount(_uiState.value.setup.playerCount)
+    fun maxUndercoverForCurrentSetup(): Int {
+        val setup = _uiState.value.setup
+        return maxUndercoverFor(setup.playerCount, setup.mrWhiteCount)
+    }
 
-    fun maxMrWhiteForCurrentSetup(): Int = maxMrWhiteCount(_uiState.value.setup.undercoverCount).coerceAtLeast(0)
+    fun maxMrWhiteForCurrentSetup(): Int {
+        val setup = _uiState.value.setup
+        return maxMrWhiteFor(setup.playerCount, setup.undercoverCount)
+    }
 
     fun updatePlayerCount(count: Int) {
         val current = _uiState.value.setup
         val clampedPlayers = count.coerceIn(4, 15)
         val updatedNames = current.playerNames.take(clampedPlayers).toMutableList().apply {
             while (size < clampedPlayers) {
-                add("Player ${size + 1}")
+                add("")
             }
         }
 
-        val underCap = maxUndercoverCount(clampedPlayers)
-        val undercovers = current.undercoverCount.coerceIn(1, underCap)
-        val mrCap = maxMrWhiteCount(undercovers).coerceAtLeast(0)
-        val mrWhite = current.mrWhiteCount.coerceIn(0, mrCap)
+        var undercovers = current.undercoverCount.coerceIn(1, maxUndercoverCount(clampedPlayers))
+        var mrWhite = current.mrWhiteCount.coerceIn(0, maxMrWhiteCount(clampedPlayers))
+
+        val outlierCap = clampedPlayers - 2
+        if (undercovers + mrWhite > outlierCap) {
+            val overflow = undercovers + mrWhite - outlierCap
+            mrWhite = (mrWhite - overflow).coerceAtLeast(0)
+            if (undercovers + mrWhite > outlierCap) {
+                undercovers = (outlierCap - mrWhite).coerceAtLeast(1)
+            }
+        }
+
+        undercovers = undercovers.coerceIn(1, maxUndercoverFor(clampedPlayers, mrWhite))
+        mrWhite = mrWhite.coerceIn(0, maxMrWhiteFor(clampedPlayers, undercovers))
 
         val helper = if (undercovers != current.undercoverCount || mrWhite != current.mrWhiteCount) {
             "Role counts adjusted to stay within limits."
@@ -89,10 +107,8 @@ class OutlierViewModel : ViewModel() {
 
     fun updateUndercoverCount(count: Int) {
         val current = _uiState.value.setup
-        val underCap = maxUndercoverCount(current.playerCount)
-        val undercovers = count.coerceIn(1, underCap)
-        val mrCap = maxMrWhiteCount(undercovers).coerceAtLeast(0)
-        val mrWhite = current.mrWhiteCount.coerceIn(0, mrCap)
+        val undercovers = count.coerceIn(1, maxUndercoverCount(current.playerCount))
+        val mrWhite = current.mrWhiteCount.coerceIn(0, maxMrWhiteFor(current.playerCount, undercovers))
 
         _uiState.value = _uiState.value.copy(
             setup = current.copy(
@@ -100,7 +116,7 @@ class OutlierViewModel : ViewModel() {
                 mrWhiteCount = mrWhite,
                 errorMessage = null,
                 helperMessage = if (mrWhite != current.mrWhiteCount) {
-                    "Mr White adjusted to fit undercover limit."
+                    "Mr White adjusted to keep at least two civilians in play."
                 } else {
                     null
                 }
@@ -110,13 +126,18 @@ class OutlierViewModel : ViewModel() {
 
     fun updateMrWhiteCount(count: Int) {
         val current = _uiState.value.setup
-        val mrCap = maxMrWhiteCount(current.undercoverCount).coerceAtLeast(0)
-        val mrWhite = count.coerceIn(0, mrCap)
+        val mrWhite = count.coerceIn(0, maxMrWhiteCount(current.playerCount))
+        val undercovers = current.undercoverCount.coerceIn(1, maxUndercoverFor(current.playerCount, mrWhite))
         _uiState.value = _uiState.value.copy(
             setup = current.copy(
+                undercoverCount = undercovers,
                 mrWhiteCount = mrWhite,
                 errorMessage = null,
-                helperMessage = null
+                helperMessage = if (undercovers != current.undercoverCount) {
+                    "Undercover count adjusted to keep at least two civilians in play."
+                } else {
+                    null
+                }
             )
         )
     }
@@ -140,7 +161,9 @@ class OutlierViewModel : ViewModel() {
 
     fun startGame() {
         val setup = _uiState.value.setup
-        val names = setup.playerNames.map { it.trim() }
+        val names = setup.playerNames.mapIndexed { index, name ->
+            name.trim().ifBlank { fallbackName(index) }
+        }
         val nameError = validatePlayerNames(names)
         if (nameError != null) {
             _uiState.value = _uiState.value.copy(setup = setup.copy(errorMessage = nameError))
@@ -300,5 +323,17 @@ class OutlierViewModel : ViewModel() {
         Role.CIVILIAN -> "Civilian"
         Role.UNDERCOVER -> "Undercover"
         Role.MR_WHITE -> "Mr White"
+    }
+
+    private fun maxUndercoverFor(playerCount: Int, mrWhiteCount: Int): Int {
+        val roleCap = maxUndercoverCount(playerCount)
+        val civilianCap = (playerCount - 2 - mrWhiteCount).coerceAtLeast(1)
+        return minOf(roleCap, civilianCap)
+    }
+
+    private fun maxMrWhiteFor(playerCount: Int, undercoverCount: Int): Int {
+        val roleCap = maxMrWhiteCount(playerCount)
+        val civilianCap = (playerCount - 2 - undercoverCount).coerceAtLeast(0)
+        return minOf(roleCap, civilianCap)
     }
 }

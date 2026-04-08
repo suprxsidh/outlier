@@ -87,4 +87,21 @@ class WordBankTest {
 
         assertTrue(lowQuality.isEmpty())
     }
+
+    @Test
+    fun contextualSimilarity_isSymmetricAndBounded() {
+        val a = WordBank.contextualSimilarity("Pizza", "Burger")
+        val b = WordBank.contextualSimilarity("Burger", "Pizza")
+
+        assertTrue(a in 0.0..1.0)
+        assertEquals(a, b, 0.000001)
+    }
+
+    @Test
+    fun contextualSimilarity_prefersRelatedWordsOverUnrelatedWords() {
+        val related = WordBank.contextualSimilarity("Pizza", "Burger")
+        val unrelated = WordBank.contextualSimilarity("Pizza", "Galaxy")
+
+        assertTrue(related > unrelated)
+    }
 }
