@@ -153,12 +153,13 @@ fun determineWinner(
     }
 
     val civilians = aliveRoles.count { it == Role.CIVILIAN }
-    val outliers = aliveRoles.count { it == Role.UNDERCOVER || it == Role.MR_WHITE }
+    val undercovers = aliveRoles.count { it == Role.UNDERCOVER }
+    val mrWhiteAlive = aliveRoles.count { it == Role.MR_WHITE } > 0
 
-    if (outliers == 0) {
+    if (!mrWhiteAlive && undercovers == 0) {
         return Winner.CIVILIANS
     }
-    if (outliers >= civilians) {
+    if (civilians == undercovers) {
         return Winner.OUTLIERS
     }
     return Winner.NONE
