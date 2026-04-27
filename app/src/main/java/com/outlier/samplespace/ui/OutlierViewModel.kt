@@ -39,7 +39,9 @@ data class OutlierUiState(
     val game: GameState = GameState(),
     val revealShown: Boolean = false,
     val guessInput: String = "",
-    val transientMessage: String? = null
+    val transientMessage: String? = null,
+    val civilianScore: Int = 0,
+    val outlierScore: Int = 0
 )
 
 private fun defaultNames(count: Int): List<String> =
@@ -102,7 +104,9 @@ class OutlierViewModel : ViewModel() {
                 playerNames = updatedNames,
                 errorMessage = null,
                 helperMessage = helper
-            )
+            ),
+            civilianScore = 0,
+            outlierScore = 0
         )
     }
 
@@ -149,7 +153,9 @@ class OutlierViewModel : ViewModel() {
         val names = current.playerNames.toMutableList()
         names[index] = value
         _uiState.value = _uiState.value.copy(
-            setup = current.copy(playerNames = names, errorMessage = null)
+            setup = current.copy(playerNames = names, errorMessage = null),
+            civilianScore = 0,
+            outlierScore = 0
         )
     }
 
@@ -258,13 +264,18 @@ class OutlierViewModel : ViewModel() {
 
     fun continueAfterAnnouncement() {
         val current = _uiState.value.game
-        val next = runCatching { session.continueAfterAnnouncement(current) }
+        val result = runCatching { session.continueAfterAnnouncement(current) }
             .getOrElse {
                 _uiState.value = _uiState.value.copy(transientMessage = it.message ?: "Cannot continue yet")
                 return
             }
 
-        _uiState.value = _uiState.value.copy(game = next, transientMessage = null)
+        _uiState.value = _uiState.value.copy(
+            game = result.state,
+            civilianScore = _uiState.value.civilianScore + result.civilianPoints,
+            outlierScore = _uiState.value.outlierScore + result.outlierPoints,
+            transientMessage = null
+        )
     }
 
     fun updateGuess(value: String) {
@@ -274,12 +285,27 @@ class OutlierViewModel : ViewModel() {
     fun submitGuess() {
         val guess = _uiState.value.guessInput.trim()
         if (guess.isEmpty()) return
-        val next = session.submitMrWhiteGuess(_uiState.value.game, guess)
-        _uiState.value = _uiState.value.copy(game = next, guessInput = "", transientMessage = null)
+        val result = session.submitMrWhiteGuess(_uiState.value.game, guess)
+        _uiState.value = _uiState.value.copy(
+            game = result.state,
+            guessInput = "",
+            civilianScore = _uiState.value.civilianScore + result.civilianPoints,
+            outlierScore = _uiState.value.outlierScore + result.outlierPoints,
+            transientMessage = null
+        )
     }
 
     fun resetToSetup() {
-        _uiState.value = OutlierUiState(setup = SetupState())
+        val current = _uiState.value
+        _uiState.value = OutlierUiState(
+            setup = SetupState(
+                playerCount = current.setup.playerCount,
+                playerNames = current.setup.playerNames,
+                countPartsEnabled = current.setup.countPartsEnabled
+            ),
+            civilianScore = current.civilianScore,
+            outlierScore = current.outlierScore
+        )
     }
 
     fun clearTransientMessage() {

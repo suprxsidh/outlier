@@ -34,9 +34,13 @@ data class GameState(
     val eliminationAnnouncement: EliminationAnnouncement? = null,
     val winner: Winner = Winner.NONE,
     val lastEliminatedPlayer: String? = null,
-    val countParts: Boolean = false,
-    val civilianScore: Int = 0,
-    val outlierScore: Int = 0
+    val countParts: Boolean = false
+)
+
+data class GameResult(
+    val state: GameState,
+    val civilianPoints: Int,
+    val outlierPoints: Int
 )
 
 class GameSession(private val random: Random = Random.Default) {
@@ -156,10 +160,97 @@ class GameSession(private val random: Random = Random.Default) {
         )
     }
 
-    fun continueAfterAnnouncement(state: GameState): GameState {
+fun continueAfterAnnouncement(state: GameState): GameResult {
         require(state.phase == GamePhase.POST_ELIMINATION_ANNOUNCEMENT) {
             "Announcement is not active."
         }
+
+        val winner = determineWinner(
+            aliveRoles = state.assignments.filter { it.playerName in state.alivePlayers }.map { it.role },
+            mrWhiteGuessedWord = false
+        )
+
+        val (civPoints, outlPoints) = scoreFromWinner(winner)
+
+        if (winner != Winner.NONE) {
+            return GameResult(
+                state = state.copy(phase = GamePhase.GAME_OVER, winner = winner),
+                civilianPoints = civPoints,
+                outlierPoints = outlPoints
+            )
+        }
+
+        return if (state.pendingMrWhitePlayer != null) {
+            GameResult(
+                state = state.copy(phase = GamePhase.MR_WHITE_GUESS),
+                civilianPoints = 0,
+                outlierPoints = 0
+            )
+        } else {
+            GameResult(
+                state = state.copy(phase = GamePhase.CLUE_ROUND, roundNumber = state.roundNumber + 1),
+                civilianPoints = 0,
+                outlierPoints = 0
+            )
+        }
+    }
+
+    fun submitMrWhiteGuess(state: GameState, guess: String): GameResult {
+        require(state.phase == GamePhase.MR_WHITE_GUESS) { "Mr White guess is not active." }
+        val pair = state.pair ?: throw IllegalStateException("Word pair missing.")
+        val guessedCorrectly = guess.trim().equals(pair.civilianWord, ignoreCase = true)
+
+        return if (guessedCorrectly) {
+            GameResult(
+                state = state.copy(
+                    phase = GamePhase.GAME_OVER,
+                    winner = Winner.MR_WHITE,
+                    pendingMrWhitePlayer = null
+                ),
+                civilianPoints = 0,
+                outlierPoints = 3
+            )
+        } else {
+            val winner = determineWinner(
+                aliveRoles = state.assignments
+                    .filter { it.playerName in state.alivePlayers }
+                    .map { it.role },
+                mrWhiteGuessedWord = false
+            )
+            if (winner != Winner.NONE) {
+                val (civPoints, outlPoints) = scoreFromWinner(winner)
+                GameResult(
+                    state = state.copy(
+                        phase = GamePhase.GAME_OVER,
+                        winner = winner,
+                        pendingMrWhitePlayer = null
+                    ),
+                    civilianPoints = civPoints,
+                    outlierPoints = outlPoints
+                )
+            } else {
+                GameResult(
+                    state = state.copy(
+                        phase = GamePhase.CLUE_ROUND,
+                        roundNumber = state.roundNumber + 1,
+                        pendingMrWhitePlayer = null
+                    ),
+                    civilianPoints = 0,
+                    outlierPoints = 0
+                )
+            }
+        }
+    }
+
+    private fun scoreFromWinner(winner: Winner): Pair<Int, Int> {
+        return when (winner) {
+            Winner.CIVILIANS -> Pair(1, 0)
+            Winner.OUTLIERS -> Pair(0, 3)
+            Winner.MR_WHITE -> Pair(0, 3)
+            Winner.NONE -> Pair(0, 0)
+        }
+    }
+}
 
         val winner = determineWinner(
             aliveRoles = state.assignments.filter { it.playerName in state.alivePlayers }.map { it.role },

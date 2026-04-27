@@ -153,6 +153,8 @@ fun OutlierApp(viewModel: OutlierViewModel = viewModel()) {
                 winnerLabel = viewModel.winnerLabel(),
                 roleSummary = viewModel.roleCountsSummary(),
                 roleRevealLines = viewModel.roleRevealLinesForResult(),
+                civilianScore = uiState.civilianScore,
+                outlierScore = uiState.outlierScore,
                 onPlayAgain = viewModel::resetToSetup
             )
         }
@@ -961,6 +963,8 @@ private fun ResultScreen(
     winnerLabel: String,
     roleSummary: String,
     roleRevealLines: List<String>,
+    civilianScore: Int,
+    outlierScore: Int,
     onPlayAgain: () -> Unit
 ) {
     LazyColumn(
@@ -1007,7 +1011,7 @@ private fun ResultScreen(
                             fontWeight = FontWeight.Medium
                         )
                         Text(
-                            text = "${state.civilianScore}",
+                            text = "$civilianScore",
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.ExtraBold,
                             color = MaterialTheme.colorScheme.primary
@@ -1020,7 +1024,7 @@ private fun ResultScreen(
                             fontWeight = FontWeight.Medium
                         )
                         Text(
-                            text = "${state.outlierScore}",
+                            text = "$outlierScore",
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.ExtraBold,
                             color = MaterialTheme.colorScheme.tertiary
