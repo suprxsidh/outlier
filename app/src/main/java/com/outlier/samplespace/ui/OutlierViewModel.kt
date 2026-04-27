@@ -29,6 +29,7 @@ data class SetupState(
     val mrWhiteCount: Int = DEFAULT_MR_WHITE_COUNT,
     val playerNames: List<String> = defaultNames(DEFAULT_PLAYER_COUNT),
     val selectedCategory: String = "All",
+    val countPartsEnabled: Boolean = false,
     val errorMessage: String? = null,
     val helperMessage: String? = null
 )
@@ -159,6 +160,13 @@ class OutlierViewModel : ViewModel() {
         )
     }
 
+    fun toggleCountParts() {
+        val current = _uiState.value.setup
+        _uiState.value = _uiState.value.copy(
+            setup = current.copy(countPartsEnabled = !current.countPartsEnabled)
+        )
+    }
+
     fun startGame() {
         val setup = _uiState.value.setup
         val names = setup.playerNames.mapIndexed { index, name ->
@@ -182,7 +190,7 @@ class OutlierViewModel : ViewModel() {
         }
 
         val pair = pickPair(setup.selectedCategory)
-        val state = session.startGame(names, config, pair)
+        val state = session.startGame(names, config, pair, setup.countPartsEnabled)
         _uiState.value = _uiState.value.copy(
             setup = setup.copy(errorMessage = null, helperMessage = null),
             game = state,

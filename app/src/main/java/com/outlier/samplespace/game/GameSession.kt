@@ -33,7 +33,8 @@ data class GameState(
     val pendingMrWhitePlayer: String? = null,
     val eliminationAnnouncement: EliminationAnnouncement? = null,
     val winner: Winner = Winner.NONE,
-    val lastEliminatedPlayer: String? = null
+    val lastEliminatedPlayer: String? = null,
+    val countParts: Boolean = false
 )
 
 class GameSession(private val random: Random = Random.Default) {
@@ -41,7 +42,8 @@ class GameSession(private val random: Random = Random.Default) {
     fun startGame(
         playerNames: List<String>,
         config: GameConfig,
-        pair: WordPair
+        pair: WordPair,
+        countParts: Boolean = false
     ): GameState {
         val configError = validateConfig(config)
         require(configError == null) { configError ?: "Invalid game config." }
@@ -62,7 +64,8 @@ class GameSession(private val random: Random = Random.Default) {
             revealOrder = revealOrder,
             revealIndex = 0,
             roundNumber = 1,
-            alivePlayers = playerNames
+            alivePlayers = playerNames,
+            countParts = countParts
         )
     }
 

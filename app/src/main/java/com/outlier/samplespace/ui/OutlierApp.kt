@@ -40,6 +40,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -284,6 +286,40 @@ private fun SetupScreen(viewModel: OutlierViewModel) {
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+            }
+        }
+
+        item {
+            PanelCard(
+                title = "Game Options",
+                icon = Icons.Filled.TipsAndUpdates,
+                accent = MaterialTheme.colorScheme.secondary
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        Text(
+                            text = "Count Clue Parts",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            text = "Track word part count during discussion",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Switch(
+                        checked = setup.countPartsEnabled,
+                        onCheckedChange = { viewModel.toggleCountParts() },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = MaterialTheme.colorScheme.primary,
+                            checkedTrackColor = MaterialTheme.colorScheme.primaryContainer
+                        )
+                    )
+                }
             }
         }
 
@@ -617,6 +653,28 @@ private fun ClueRoundScreen(state: GameState, onStartElimination: () -> Unit) {
                 icon = Icons.Filled.TipsAndUpdates,
                 accent = MaterialTheme.colorScheme.tertiary
             )
+        }
+
+        if (state.countParts) {
+            item {
+                PanelCard(
+                    title = "Clue Parts Counter",
+                    icon = Icons.Filled.TipsAndUpdates,
+                    accent = MaterialTheme.colorScheme.primary
+                ) {
+                    val partCount = state.alivePlayers.size
+                    Text(
+                        text = "Total clues given: $partCount",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        text = "Each player should give $partCount word parts",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
         }
 
         item {
