@@ -34,7 +34,9 @@ data class GameState(
     val eliminationAnnouncement: EliminationAnnouncement? = null,
     val winner: Winner = Winner.NONE,
     val lastEliminatedPlayer: String? = null,
-    val countParts: Boolean = false
+    val countParts: Boolean = false,
+    val civilianScore: Int = 0,
+    val outlierScore: Int = 0
 )
 
 class GameSession(private val random: Random = Random.Default) {
@@ -165,9 +167,12 @@ class GameSession(private val random: Random = Random.Default) {
         )
 
         if (winner != Winner.NONE) {
+            val (civilianScore, outlierScore) = calculateScores(winner, state)
             return state.copy(
                 phase = GamePhase.GAME_OVER,
-                winner = winner
+                winner = winner,
+                civilianScore = civilianScore,
+                outlierScore = outlierScore
             )
         }
 
@@ -187,10 +192,13 @@ class GameSession(private val random: Random = Random.Default) {
         val guessedCorrectly = guess.trim().equals(pair.civilianWord, ignoreCase = true)
 
         return if (guessedCorrectly) {
+            val (civilianScore, outlierScore) = calculateScores(Winner.MR_WHITE, state)
             state.copy(
                 phase = GamePhase.GAME_OVER,
                 winner = Winner.MR_WHITE,
-                pendingMrWhitePlayer = null
+                pendingMrWhitePlayer = null,
+                civilianScore = civilianScore,
+                outlierScore = outlierScore
             )
         } else {
             val winner = determineWinner(
@@ -200,10 +208,13 @@ class GameSession(private val random: Random = Random.Default) {
                 mrWhiteGuessedWord = false
             )
             if (winner != Winner.NONE) {
+                val (civilianScore, outlierScore) = calculateScores(winner, state)
                 state.copy(
                     phase = GamePhase.GAME_OVER,
                     winner = winner,
-                    pendingMrWhitePlayer = null
+                    pendingMrWhitePlayer = null,
+                    civilianScore = civilianScore,
+                    outlierScore = outlierScore
                 )
             } else {
                 state.copy(
@@ -212,6 +223,15 @@ class GameSession(private val random: Random = Random.Default) {
                     pendingMrWhitePlayer = null
                 )
             }
+        }
+    }
+
+    private fun calculateScores(winner: Winner, state: GameState): Pair<Int, Int> {
+        return when (winner) {
+            Winner.CIVILIANS -> Pair(state.civilianScore + 1, state.outlierScore)
+            Winner.OUTLIERS -> Pair(state.civilianScore, state.outlierScore + 3)
+            Winner.MR_WHITE -> Pair(state.civilianScore, state.outlierScore + 3)
+            Winner.NONE -> Pair(state.civilianScore, state.outlierScore)
         }
     }
 }

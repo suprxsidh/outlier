@@ -19,8 +19,8 @@ android {
         applicationId = "com.outlier.samplespace"
         minSdk = 26
         targetSdk = 34
-        versionCode = 7
-        versionName = "1.6.0"
+        versionCode = 8
+        versionName = "1.6.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

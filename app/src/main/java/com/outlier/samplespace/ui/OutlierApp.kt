@@ -992,6 +992,46 @@ private fun ResultScreen(
 
         item {
             PanelCard(
+                title = "Score Board",
+                icon = Icons.Filled.Policy,
+                accent = MaterialTheme.colorScheme.primary
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "Civilians",
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Text(
+                            text = "${state.civilianScore}",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "Outliers",
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Text(
+                            text = "${state.outlierScore}",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = MaterialTheme.colorScheme.tertiary
+                        )
+                    }
+                }
+            }
+        }
+
+        item {
+            PanelCard(
                 title = "Full Role Reveal",
                 icon = Icons.Filled.Groups,
                 accent = MaterialTheme.colorScheme.primary
