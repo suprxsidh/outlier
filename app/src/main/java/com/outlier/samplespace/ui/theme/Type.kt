@@ -8,8 +8,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.outlier.samplespace.R
 
-private val DisplayFamily = FontFamily(Font(R.font.kenney_future_narrow))
-private val BodyFamily = FontFamily(Font(R.font.kenney_future))
+private val DisplayFamily = FontFamily(Font(R.font.nunito_bold))
+private val BodyFamily = FontFamily(Font(R.font.nunito_regular))
 
 val Typography = Typography(
     headlineLarge = TextStyle(

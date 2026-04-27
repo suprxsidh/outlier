@@ -96,33 +96,24 @@ fun assignRoles(
         "Expected ${config.playerCount} players, got ${playerNames.size}."
     }
 
-    val shuffledNames = playerNames.shuffled(random)
-    val mrWhiteNames = shuffledNames.take(config.mrWhiteCount).toSet()
-    val undercoverNames = shuffledNames
-        .drop(config.mrWhiteCount)
-        .take(config.undercoverCount)
-        .toSet()
+    val civilianCount = config.playerCount - config.undercoverCount - config.mrWhiteCount
+    val rolePool = MutableList(config.mrWhiteCount) { Role.MR_WHITE } +
+            MutableList(config.undercoverCount) { Role.UNDERCOVER } +
+            MutableList(civilianCount) { Role.CIVILIAN }
 
-    return playerNames.map { name ->
-        when {
-            mrWhiteNames.contains(name) -> AssignedRole(
-                playerName = name,
-                role = Role.MR_WHITE,
-                word = null
-            )
+    val shuffledRoles = rolePool.shuffled(random)
 
-            undercoverNames.contains(name) -> AssignedRole(
-                playerName = name,
-                role = Role.UNDERCOVER,
-                word = pair.undercoverWord
-            )
-
-            else -> AssignedRole(
-                playerName = name,
-                role = Role.CIVILIAN,
-                word = pair.civilianWord
-            )
-        }
+    return playerNames.mapIndexed { index, name ->
+        val role = shuffledRoles[index]
+        AssignedRole(
+            playerName = name,
+            role = role,
+            word = when (role) {
+                Role.MR_WHITE -> null
+                Role.UNDERCOVER -> pair.undercoverWord
+                Role.CIVILIAN -> pair.civilianWord
+            }
+        )
     }
 }
 
