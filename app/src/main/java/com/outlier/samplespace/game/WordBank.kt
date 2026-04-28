@@ -1,270 +1,513 @@
 package com.outlier.samplespace.game
 
-import kotlin.math.sqrt
-
 object WordBank {
-    private val categoryWordGroups: Map<String, List<List<String>>> = mapOf(
-        "Food" to listOf(
-            listOf("Pizza", "Burger", "Taco", "Burrito", "Sandwich", "Salad", "Pasta", "Soup"),
-            listOf("Pancake", "Waffle", "Donut", "Cookie", "Cupcake", "Brownie", "Muffin", "Pie")
-        ),
-        "Beverages" to listOf(
-            listOf("Coke", "Pepsi", "Fanta", "Sprite", "Seven Up", "Mirinda", "Mountain Dew", "Dr Pepper"),
-            listOf("Coffee", "Tea", "Juice", "Smoothie", "Lemonade", "Milkshake", "Soda", "Water")
-        ),
-        "Animals" to listOf(
-            listOf("Dog", "Cat", "Rabbit", "Hamster", "Parrot", "Turtle", "Goldfish", "Guinea Pig"),
-            listOf("Lion", "Tiger", "Leopard", "Cheetah", "Wolf", "Fox", "Bear", "Panther")
-        ),
-        "Places" to listOf(
-            listOf("Library", "Museum", "Cinema", "Theater", "Aquarium", "Gallery", "Stadium", "Park"),
-            listOf("Airport", "Station", "Harbor", "Terminal", "Runway", "Gate", "Platform", "Ticket Counter")
-        ),
-        "Buildings" to listOf(
-            listOf("Elevator", "Escalator", "Stairs", "Hallway", "Lobby", "Corridor", "Balcony", "Atrium"),
-            listOf("Classroom", "Laboratory", "Office", "Conference Room", "Cafeteria", "Gymnasium", "Auditorium", "Library Room")
-        ),
-        "Objects" to listOf(
-            listOf("Laptop", "Tablet", "Phone", "Monitor", "Keyboard", "Mouse", "Headphones", "Webcam"),
-            listOf("Backpack", "Suitcase", "Wallet", "Umbrella", "Bottle", "Notebook", "Pen", "Pencil")
-        ),
-        "Sports" to listOf(
-            listOf("Soccer", "Basketball", "Volleyball", "Tennis", "Badminton", "Baseball", "Cricket", "Rugby"),
-            listOf("Swimming", "Running", "Cycling", "Rowing", "Skating", "Skiing", "Surfing", "Archery")
-        ),
-        "Music" to listOf(
-            listOf("Guitar", "Piano", "Violin", "Cello", "Drums", "Flute", "Trumpet", "Saxophone"),
-            listOf("Melody", "Rhythm", "Harmony", "Chorus", "Verse", "Tempo", "Beat", "Tune")
-        ),
-        "Nature" to listOf(
-            listOf("Forest", "River", "Ocean", "Lake", "Waterfall", "Meadow", "Valley", "Canyon"),
-            listOf("Sunrise", "Sunset", "Rainbow", "Breeze", "Cloud", "Thunder", "Lightning", "Mist")
-        ),
-        "Jobs" to listOf(
-            listOf("Doctor", "Nurse", "Dentist", "Pharmacist", "Surgeon", "Paramedic", "Therapist", "Pediatrician"),
-            listOf("Teacher", "Principal", "Librarian", "Counselor", "Tutor", "Professor", "Coach", "Instructor")
-        ),
-        "Home" to listOf(
-            listOf("Kitchen", "Bedroom", "Bathroom", "Living Room", "Dining Room", "Garage", "Basement", "Attic"),
-            listOf("Sofa", "Armchair", "Table", "Cabinet", "Curtain", "Pillow", "Blanket", "Lamp")
-        ),
-        "Travel" to listOf(
-            listOf("Passport", "Ticket", "Itinerary", "Luggage", "Boarding Pass", "Visa", "Checkpoint", "Customs"),
-            listOf("Taxi", "Bus", "Train", "Subway", "Tram", "Ferry", "Cruise", "Shuttle")
-        ),
-        "School" to listOf(
-            listOf("Notebook", "Workbook", "Homework", "Project", "Essay", "Exam", "Quiz", "Syllabus"),
-            listOf("Student", "Teacher", "Classroom", "Locker", "Semester", "Timetable", "Diploma", "Graduation")
-        ),
-        "Weather" to listOf(
-            listOf("Sunny", "Cloudy", "Rainy", "Windy", "Foggy", "Stormy", "Snowy", "Humid"),
-            listOf("Drizzle", "Shower", "Downpour", "Blizzard", "Hail", "Frost", "Monsoon", "Heatwave")
-        ),
-        "Entertainment" to listOf(
-            listOf("Movie", "Series", "Cartoon", "Documentary", "Podcast", "Radio", "Concert", "Festival"),
-            listOf("Puzzle", "Riddle", "Board Game", "Card Game", "Trivia", "Story", "Comic", "Novel")
-        ),
-        "Science" to listOf(
-            listOf("Atom", "Molecule", "Cell", "Neuron", "Tissue", "Organ", "Genome", "Protein"),
-            listOf("Planet", "Galaxy", "Comet", "Asteroid", "Orbit", "Telescope", "Satellite", "Nebula")
-        ),
-        "Technology" to listOf(
-            listOf("Browser", "Website", "App", "Server", "Database", "Cloud", "Firewall", "Password"),
-            listOf("Robot", "Drone", "Sensor", "Processor", "Algorithm", "Code", "Console", "Router")
-        )
+    val allPairs: List<WordPair> = listOf(
+        WordPair("Food", "Rice", "Grain"),
+        WordPair("Food", "Pizza", "Flatbread"),
+        WordPair("Food", "Burger", "Sandwich"),
+        WordPair("Food", "Cake", "Pastry"),
+        WordPair("Food", "Soup", "Stew"),
+        WordPair("Food", "Pasta", "Noodle"),
+        WordPair("Food", "Butter", "Margarine"),
+        WordPair("Food", "Honey", "Syrup"),
+        WordPair("Food", "Jam", "Jelly"),
+        WordPair("Food", "Pancake", "Waffle"),
+        WordPair("Food", "Apple", "Pear"),
+        WordPair("Food", "Onion", "Garlic"),
+        WordPair("Food", "Salt", "Sugar"),
+        WordPair("Food", "Vinegar", "Lemon Juice"),
+        WordPair("Food", "Taco", "Burrito"),
+        WordPair("Food", "Steak", "Chop"),
+        WordPair("Food", "Muffin", "Cupcake"),
+        WordPair("Food", "Cookie", "Biscuit"),
+        WordPair("Food", "Bread", "Toast"),
+        WordPair("Food", "Cheese", "Cream"),
+        WordPair("Food", "Lettuce", "Spinach"),
+        WordPair("Food", "Shrimp", "Prawn"),
+        WordPair("Food", "Salmon", "Tuna"),
+        WordPair("Food", "Ham", "Bacon"),
+        WordPair("Food", "Egg", "Omelet"),
+        WordPair("Food", "Nuts", "Seeds"),
+        WordPair("Food", "Yogurt", "Curd"),
+        WordPair("Food", "Chocolate", "Cocoa"),
+        WordPair("Food", "Sauce", "Gravy"),
+        WordPair("Food", "Salad", "Bowl"),
+        WordPair("Beverages", "Coffee", "Tea"),
+        WordPair("Beverages", "Juice", "Smoothie"),
+        WordPair("Beverages", "Milk", "Cream"),
+        WordPair("Beverages", "Water", "Soda"),
+        WordPair("Beverages", "Beer", "Cider"),
+        WordPair("Beverages", "Wine", "Grape Juice"),
+        WordPair("Beverages", "Lemonade", "Limeade"),
+        WordPair("Beverages", "Cocoa", "Latte"),
+        WordPair("Beverages", "Shake", "Float"),
+        WordPair("Beverages", "Punch", "Cocktail"),
+        WordPair("Beverages", "Espresso", "Americano"),
+        WordPair("Beverages", "Cola", "Root Beer"),
+        WordPair("Beverages", "Tonic", "Seltzer"),
+        WordPair("Beverages", "Chai", "Matcha"),
+        WordPair("Beverages", "Ale", "Lager"),
+        WordPair("Beverages", "Milkshake", "Smoothie"),
+        WordPair("Beverages", "Cider", "Apple Juice"),
+        WordPair("Beverages", "Stout", "Porter"),
+        WordPair("Beverages", "Frappe", "Slushie"),
+        WordPair("Beverages", "Ginger Ale", "Sprite"),
+        WordPair("Beverages", "Decaf", "Caffeine"),
+        WordPair("Beverages", "Syrup", "Cordial"),
+        WordPair("Beverages", "Broth", "Stock"),
+        WordPair("Beverages", "Lassi", "Yogurt"),
+        WordPair("Beverages", "Mead", "Honey Wine"),
+        WordPair("Beverages", "Mocktail", "Punch"),
+        WordPair("Beverages", "Oolong", "Green Tea"),
+        WordPair("Beverages", "Sake", "Rice Wine"),
+        WordPair("Beverages", "Earl Grey", "Black Tea"),
+        WordPair("Beverages", "Latte", "Cappuccino"),
+        WordPair("Animals", "Cat", "Rabbit"),
+        WordPair("Animals", "Dog", "Wolf"),
+        WordPair("Animals", "Horse", "Pony"),
+        WordPair("Animals", "Cow", "Ox"),
+        WordPair("Animals", "Sheep", "Goat"),
+        WordPair("Animals", "Tiger", "Lion"),
+        WordPair("Animals", "Cheetah", "Leopard"),
+        WordPair("Animals", "Whale", "Dolphin"),
+        WordPair("Animals", "Frog", "Toad"),
+        WordPair("Animals", "Rat", "Mouse"),
+        WordPair("Animals", "Crow", "Raven"),
+        WordPair("Animals", "Owl", "Falcon"),
+        WordPair("Animals", "Lizard", "Gecko"),
+        WordPair("Animals", "Snake", "Eel"),
+        WordPair("Animals", "Bee", "Wasp"),
+        WordPair("Animals", "Ant", "Termite"),
+        WordPair("Animals", "Butterfly", "Moth"),
+        WordPair("Animals", "Spider", "Scorpion"),
+        WordPair("Animals", "Deer", "Elk"),
+        WordPair("Animals", "Penguin", "Puffin"),
+        WordPair("Animals", "Seal", "Walrus"),
+        WordPair("Animals", "Bat", "Bird"),
+        WordPair("Animals", "Lobster", "Crab"),
+        WordPair("Animals", "Shrimp", "Krill"),
+        WordPair("Animals", "Camel", "Llama"),
+        WordPair("Animals", "Donkey", "Mule"),
+        WordPair("Animals", "Zebra", "Horse"),
+        WordPair("Animals", "Gorilla", "Chimpanzee"),
+        WordPair("Animals", "Panda", "Koala"),
+        WordPair("Animals", "Swan", "Goose"),
+        WordPair("Places", "Park", "Garden"),
+        WordPair("Places", "Beach", "Coast"),
+        WordPair("Places", "Desert", "Dunes"),
+        WordPair("Places", "Forest", "Woods"),
+        WordPair("Places", "Island", "Peninsula"),
+        WordPair("Places", "Mountain", "Hill"),
+        WordPair("Places", "Valley", "Canyon"),
+        WordPair("Places", "River", "Stream"),
+        WordPair("Places", "Lake", "Pond"),
+        WordPair("Places", "Field", "Meadow"),
+        WordPair("Places", "City", "Town"),
+        WordPair("Places", "Village", "Suburb"),
+        WordPair("Places", "Street", "Alley"),
+        WordPair("Places", "Road", "Highway"),
+        WordPair("Places", "Path", "Trail"),
+        WordPair("Places", "Market", "Plaza"),
+        WordPair("Places", "Farm", "Orchard"),
+        WordPair("Places", "Gym", "Studio"),
+        WordPair("Places", "Library", "Archive"),
+        WordPair("Places", "Museum", "Gallery"),
+        WordPair("Places", "Theater", "Cinema"),
+        WordPair("Places", "Stadium", "Arena"),
+        WordPair("Places", "Airport", "Station"),
+        WordPair("Places", "Port", "Harbor"),
+        WordPair("Places", "Cave", "Grotto"),
+        WordPair("Places", "Swamp", "Marsh"),
+        WordPair("Places", "Jungle", "Rainforest"),
+        WordPair("Places", "Arctic", "Tundra"),
+        WordPair("Places", "Continent", "Country"),
+        WordPair("Places", "World", "Planet"),
+        WordPair("Buildings", "House", "Cottage"),
+        WordPair("Buildings", "Castle", "Fortress"),
+        WordPair("Buildings", "Tower", "Skyscraper"),
+        WordPair("Buildings", "Shed", "Barn"),
+        WordPair("Buildings", "Cabin", "Lodge"),
+        WordPair("Buildings", "Mansion", "Villa"),
+        WordPair("Buildings", "Apartment", "Condo"),
+        WordPair("Buildings", "Palace", "Temple"),
+        WordPair("Buildings", "Church", "Cathedral"),
+        WordPair("Buildings", "Mosque", "Shrine"),
+        WordPair("Buildings", "Garage", "Carport"),
+        WordPair("Buildings", "Greenhouse", "Solarium"),
+        WordPair("Buildings", "Warehouse", "Factory"),
+        WordPair("Buildings", "Office", "Center"),
+        WordPair("Buildings", "Hospital", "Clinic"),
+        WordPair("Buildings", "School", "College"),
+        WordPair("Buildings", "Prison", "Jail"),
+        WordPair("Buildings", "Bank", "Vault"),
+        WordPair("Buildings", "Hotel", "Motel"),
+        WordPair("Buildings", "Lighthouse", "Watchtower"),
+        WordPair("Buildings", "Bridge", "Overpass"),
+        WordPair("Buildings", "Mill", "Granary"),
+        WordPair("Buildings", "Stable", "Kennel"),
+        WordPair("Buildings", "Tent", "Yurt"),
+        WordPair("Buildings", "Igloo", "Ice Hut"),
+        WordPair("Buildings", "Attic", "Basement"),
+        WordPair("Buildings", "Balcony", "Terrace"),
+        WordPair("Buildings", "Patio", "Porch"),
+        WordPair("Buildings", "Hall", "Corridor"),
+        WordPair("Buildings", "Lobby", "Lounge"),
+        WordPair("Objects", "Key", "Lock"),
+        WordPair("Objects", "Pen", "Pencil"),
+        WordPair("Objects", "Spoon", "Fork"),
+        WordPair("Objects", "Knife", "Blade"),
+        WordPair("Objects", "Plate", "Bowl"),
+        WordPair("Objects", "Glass", "Cup"),
+        WordPair("Objects", "Clock", "Watch"),
+        WordPair("Objects", "Bag", "Pouch"),
+        WordPair("Objects", "Box", "Crate"),
+        WordPair("Objects", "Mirror", "Reflection"),
+        WordPair("Objects", "Phone", "Tablet"),
+        WordPair("Objects", "Book", "Journal"),
+        WordPair("Objects", "Lamp", "Lantern"),
+        WordPair("Objects", "Chair", "Stool"),
+        WordPair("Objects", "Table", "Desk"),
+        WordPair("Objects", "Rug", "Carpet"),
+        WordPair("Objects", "Curtain", "Blind"),
+        WordPair("Objects", "Pillow", "Cushion"),
+        WordPair("Objects", "Blanket", "Sheet"),
+        WordPair("Objects", "Towel", "Rag"),
+        WordPair("Objects", "Broom", "Mop"),
+        WordPair("Objects", "Hammer", "Mallet"),
+        WordPair("Objects", "Saw", "Axe"),
+        WordPair("Objects", "Rope", "String"),
+        WordPair("Objects", "Chain", "Cable"),
+        WordPair("Objects", "Button", "Snap"),
+        WordPair("Objects", "Zipper", "Velcro"),
+        WordPair("Objects", "Needle", "Pin"),
+        WordPair("Objects", "Brush", "Comb"),
+        WordPair("Objects", "Soap", "Sponge"),
+        WordPair("Sports", "Soccer", "Football"),
+        WordPair("Sports", "Baseball", "Softball"),
+        WordPair("Sports", "Tennis", "Badminton"),
+        WordPair("Sports", "Hockey", "Lacrosse"),
+        WordPair("Sports", "Golf", "Croquet"),
+        WordPair("Sports", "Rugby", "Football"),
+        WordPair("Sports", "Basketball", "Netball"),
+        WordPair("Sports", "Volleyball", "Dodgeball"),
+        WordPair("Sports", "Running", "Jogging"),
+        WordPair("Sports", "Swimming", "Diving"),
+        WordPair("Sports", "Cycling", "Racing"),
+        WordPair("Sports", "Skiing", "Snowboarding"),
+        WordPair("Sports", "Skating", "Rollerblading"),
+        WordPair("Sports", "Surfing", "Paddleboarding"),
+        WordPair("Sports", "Boxing", "Wrestling"),
+        WordPair("Sports", "Karate", "Judo"),
+        WordPair("Sports", "Archery", "Shooting"),
+        WordPair("Sports", "Fencing", "Swordplay"),
+        WordPair("Sports", "Cricket", "Baseball"),
+        WordPair("Sports", "Bowling", "Curling"),
+        WordPair("Sports", "Yoga", "Pilates"),
+        WordPair("Sports", "Gym", "Workout"),
+        WordPair("Sports", "Hike", "Climb"),
+        WordPair("Sports", "Sail", "Row"),
+        WordPair("Sports", "Race", "Sprint"),
+        WordPair("Sports", "Marathon", "Triathlon"),
+        WordPair("Sports", "Chess", "Checkers"),
+        WordPair("Sports", "Poker", "Bridge"),
+        WordPair("Sports", "Billiards", "Pool"),
+        WordPair("Sports", "Darts", "Target"),
+        WordPair("Music", "Guitar", "Lute"),
+        WordPair("Music", "Violin", "Cello"),
+        WordPair("Music", "Piano", "Organ"),
+        WordPair("Music", "Drum", "Cymbal"),
+        WordPair("Music", "Flute", "Clarinet"),
+        WordPair("Music", "Trumpet", "Trombone"),
+        WordPair("Music", "Saxophone", "Oboe"),
+        WordPair("Music", "Harp", "Lyre"),
+        WordPair("Music", "Banjo", "Mandolin"),
+        WordPair("Music", "Song", "Lyrics"),
+        WordPair("Music", "Melody", "Harmony"),
+        WordPair("Music", "Rhythm", "Beat"),
+        WordPair("Music", "Singer", "Vocalist"),
+        WordPair("Music", "Band", "Orchestra"),
+        WordPair("Music", "Concert", "Show"),
+        WordPair("Music", "Opera", "Musical"),
+        WordPair("Music", "Jazz", "Blues"),
+        WordPair("Music", "Rock", "Metal"),
+        WordPair("Music", "Pop", "Disco"),
+        WordPair("Music", "Folk", "Country"),
+        WordPair("Music", "Rap", "Hip Hop"),
+        WordPair("Music", "Bass", "Treble"),
+        WordPair("Music", "Chorus", "Verse"),
+        WordPair("Music", "Note", "Chord"),
+        WordPair("Music", "Scale", "Key"),
+        WordPair("Music", "Album", "Record"),
+        WordPair("Music", "Radio", "Playlist"),
+        WordPair("Music", "Stage", "Podium"),
+        WordPair("Music", "Mic", "Speaker"),
+        WordPair("Music", "Headphones", "Earbuds"),
+        WordPair("Nature", "Tree", "Bush"),
+        WordPair("Nature", "Flower", "Plant"),
+        WordPair("Nature", "Leaf", "Stem"),
+        WordPair("Nature", "Root", "Seed"),
+        WordPair("Nature", "Grass", "Moss"),
+        WordPair("Nature", "Rock", "Stone"),
+        WordPair("Nature", "Sand", "Dust"),
+        WordPair("Nature", "Dirt", "Mud"),
+        WordPair("Nature", "Cloud", "Fog"),
+        WordPair("Nature", "Rain", "Drizzle"),
+        WordPair("Nature", "Snow", "Hail"),
+        WordPair("Nature", "Wind", "Breeze"),
+        WordPair("Nature", "Fire", "Flame"),
+        WordPair("Nature", "Smoke", "Ash"),
+        WordPair("Nature", "Sun", "Star"),
+        WordPair("Nature", "Moon", "Satellite"),
+        WordPair("Nature", "Sky", "Space"),
+        WordPair("Nature", "Wave", "Tide"),
+        WordPair("Nature", "Reef", "Coral"),
+        WordPair("Nature", "Shell", "Pebble"),
+        WordPair("Nature", "Feather", "Fur"),
+        WordPair("Nature", "Bone", "Tusk"),
+        WordPair("Nature", "Horn", "Antler"),
+        WordPair("Nature", "Claw", "Nail"),
+        WordPair("Nature", "Bark", "Skin"),
+        WordPair("Nature", "Petal", "Bloom"),
+        WordPair("Nature", "Branch", "Twig"),
+        WordPair("Nature", "Trunk", "Log"),
+        WordPair("Nature", "Fern", "Vine"),
+        WordPair("Nature", "Mushroom", "Fungus"),
+        WordPair("Jobs", "Doctor", "Nurse"),
+        WordPair("Jobs", "Teacher", "Professor"),
+        WordPair("Jobs", "Artist", "Painter"),
+        WordPair("Jobs", "Writer", "Author"),
+        WordPair("Jobs", "Chef", "Cook"),
+        WordPair("Jobs", "Baker", "Patissier"),
+        WordPair("Jobs", "Waiter", "Server"),
+        WordPair("Jobs", "Pilot", "Captain"),
+        WordPair("Jobs", "Driver", "Chauffeur"),
+        WordPair("Jobs", "Police", "Guard"),
+        WordPair("Jobs", "Soldier", "Warrior"),
+        WordPair("Jobs", "Farmer", "Rancher"),
+        WordPair("Jobs", "Lawyer", "Judge"),
+        WordPair("Jobs", "Clerk", "Secretary"),
+        WordPair("Jobs", "Manager", "Boss"),
+        WordPair("Jobs", "Engineer", "Architect"),
+        WordPair("Jobs", "Scientist", "Researcher"),
+        WordPair("Jobs", "Actor", "Performer"),
+        WordPair("Jobs", "Singer", "Dancer"),
+        WordPair("Jobs", "Builder", "Carpenter"),
+        WordPair("Jobs", "Plumber", "Electrician"),
+        WordPair("Jobs", "Barber", "Stylist"),
+        WordPair("Jobs", "Tailor", "Dressmaker"),
+        WordPair("Jobs", "Sailor", "Fisherman"),
+        WordPair("Jobs", "Priest", "Monk"),
+        WordPair("Jobs", "King", "Prince"),
+        WordPair("Jobs", "Queen", "Princess"),
+        WordPair("Jobs", "Scout", "Spy"),
+        WordPair("Jobs", "Coach", "Trainer"),
+        WordPair("Jobs", "Agent", "Broker"),
+        WordPair("Home", "Bed", "Mattress"),
+        WordPair("Home", "Couch", "Beanbag"),
+        WordPair("Home", "Table", "Counter"),
+        WordPair("Home", "Shelf", "Cabinet"),
+        WordPair("Home", "Drawer", "Chest"),
+        WordPair("Home", "Mirror", "Glass"),
+        WordPair("Home", "Door", "Gate"),
+        WordPair("Home", "Floor", "Ceiling"),
+        WordPair("Home", "Wall", "Fence"),
+        WordPair("Home", "Roof", "Attic"),
+        WordPair("Home", "Kitchen", "Pantry"),
+        WordPair("Home", "Bath", "Shower"),
+        WordPair("Home", "Sink", "Faucet"),
+        WordPair("Home", "Toilet", "Bidet"),
+        WordPair("Home", "Closet", "Wardrobe"),
+        WordPair("Home", "Stairs", "Ladder"),
+        WordPair("Home", "Chimney", "Vent"),
+        WordPair("Home", "Yard", "Lawn"),
+        WordPair("Home", "Window", "Skylight"),
+        WordPair("Home", "Mailbox", "Post"),
+        WordPair("Home", "Heater", "Radiator"),
+        WordPair("Home", "Fan", "Cooler"),
+        WordPair("Home", "Fridge", "Freezer"),
+        WordPair("Home", "Oven", "Stove"),
+        WordPair("Home", "Iron", "Steamer"),
+        WordPair("Home", "Vacuum", "Sweeper"),
+        WordPair("Home", "Clock", "Alarm"),
+        WordPair("Home", "Frame", "Picture"),
+        WordPair("Home", "Vase", "Pot"),
+        WordPair("Home", "Candle", "Lantern"),
+        WordPair("Travel", "Train", "Bus"),
+        WordPair("Travel", "Car", "Van"),
+        WordPair("Travel", "Truck", "Jeep"),
+        WordPair("Travel", "Bike", "Scooter"),
+        WordPair("Travel", "Boat", "Ship"),
+        WordPair("Travel", "Plane", "Jet"),
+        WordPair("Travel", "Ticket", "Pass"),
+        WordPair("Travel", "Map", "Compass"),
+        WordPair("Travel", "Bag", "Suitcase"),
+        WordPair("Travel", "Passport", "Visa"),
+        WordPair("Travel", "Trip", "Tour"),
+        WordPair("Travel", "Journey", "Voyage"),
+        WordPair("Travel", "Road", "Route"),
+        WordPair("Travel", "Track", "Rail"),
+        WordPair("Travel", "Port", "Station"),
+        WordPair("Travel", "Hotel", "Hostel"),
+        WordPair("Travel", "Guide", "Brochure"),
+        WordPair("Travel", "Tourist", "Visitor"),
+        WordPair("Travel", "Pilot", "Driver"),
+        WordPair("Travel", "Engine", "Motor"),
+        WordPair("Travel", "Wheel", "Tire"),
+        WordPair("Travel", "Seat", "Bench"),
+        WordPair("Travel", "Window", "Aisle"),
+        WordPair("Travel", "Trunk", "Boot"),
+        WordPair("Travel", "Cabin", "Deck"),
+        WordPair("Travel", "Cruise", "Flight"),
+        WordPair("Travel", "Resort", "Camp"),
+        WordPair("Travel", "Hike", "Walk"),
+        WordPair("Travel", "Drive", "Ride"),
+        WordPair("Travel", "Arrival", "Departure"),
+        WordPair("School", "Book", "Notebook"),
+        WordPair("School", "Pen", "Marker"),
+        WordPair("School", "Ruler", "Scale"),
+        WordPair("School", "Eraser", "Rubber"),
+        WordPair("School", "Chair", "Seat"),
+        WordPair("School", "Teacher", "Tutor"),
+        WordPair("School", "Student", "Pupil"),
+        WordPair("School", "Class", "Lesson"),
+        WordPair("School", "Grade", "Mark"),
+        WordPair("School", "Test", "Exam"),
+        WordPair("School", "Homework", "Project"),
+        WordPair("School", "Pencil", "Crayon"),
+        WordPair("School", "Glue", "Tape"),
+        WordPair("School", "Paper", "Sheet"),
+        WordPair("School", "Folder", "Binder"),
+        WordPair("School", "Locker", "Cubby"),
+        WordPair("School", "Gym", "Hall"),
+        WordPair("School", "Library", "Room"),
+        WordPair("School", "Board", "Screen"),
+        WordPair("School", "Chalk", "Marker"),
+        WordPair("School", "Map", "Globe"),
+        WordPair("School", "Clock", "Timer"),
+        WordPair("School", "Bag", "Backpack"),
+        WordPair("School", "Break", "Recess"),
+        WordPair("School", "Lunch", "Snack"),
+        WordPair("School", "Bell", "Whistle"),
+        WordPair("School", "Uniform", "Dress"),
+        WordPair("School", "Subject", "Topic"),
+        WordPair("School", "Fact", "Theory"),
+        WordPair("Weather", "Storm", "Blizzard"),
+        WordPair("Weather", "Heat", "Sun"),
+        WordPair("Weather", "Cold", "Frost"),
+        WordPair("Weather", "Rain", "Shower"),
+        WordPair("Weather", "Wind", "Gale"),
+        WordPair("Weather", "Cloud", "Mist"),
+        WordPair("Weather", "Fog", "Haze"),
+        WordPair("Weather", "Lightning", "Thunder"),
+        WordPair("Weather", "Snow", "Sleet"),
+        WordPair("Weather", "Ice", "Glacier"),
+        WordPair("Weather", "Tornado", "Cyclone"),
+        WordPair("Weather", "Hurricane", "Typhoon"),
+        WordPair("Weather", "Breeze", "Gust"),
+        WordPair("Weather", "Humidity", "Damp"),
+        WordPair("Weather", "Drought", "Dry"),
+        WordPair("Weather", "Rainbow", "Halo"),
+        WordPair("Weather", "Sunrise", "Sunset"),
+        WordPair("Weather", "Day", "Night"),
+        WordPair("Weather", "Season", "Climate"),
+        WordPair("Weather", "Summer", "Spring"),
+        WordPair("Weather", "Winter", "Autumn"),
+        WordPair("Weather", "Forecast", "Report"),
+        WordPair("Weather", "Sky", "Atmosphere"),
+        WordPair("Weather", "Pressure", "Weight"),
+        WordPair("Weather", "Degree", "Temperature"),
+        WordPair("Weather", "Flood", "Wave"),
+        WordPair("Weather", "Dust", "Smoke"),
+        WordPair("Weather", "Clear", "Fair"),
+        WordPair("Weather", "Overcast", "Cloudy"),
+        WordPair("Weather", "Mild", "Warm"),
+        WordPair("Entertainment", "Movie", "Film"),
+        WordPair("Entertainment", "Game", "Sport"),
+        WordPair("Entertainment", "Toy", "Game"),
+        WordPair("Entertainment", "Doll", "Puppet"),
+        WordPair("Entertainment", "Puzzle", "Riddle"),
+        WordPair("Entertainment", "Magic", "Trick"),
+        WordPair("Entertainment", "Circus", "Carnival"),
+        WordPair("Entertainment", "Park", "Fair"),
+        WordPair("Entertainment", "Story", "Fable"),
+        WordPair("Entertainment", "Poem", "Verse"),
+        WordPair("Entertainment", "Dance", "Ballet"),
+        WordPair("Entertainment", "Comedy", "Joke"),
+        WordPair("Entertainment", "Drama", "Play"),
+        WordPair("Entertainment", "Comic", "Manga"),
+        WordPair("Entertainment", "Novel", "Short Story"),
+        WordPair("Entertainment", "Video", "Clip"),
+        WordPair("Entertainment", "Photo", "Image"),
+        WordPair("Entertainment", "Painting", "Drawing"),
+        WordPair("Entertainment", "Sculpture", "Statue"),
+        WordPair("Entertainment", "Mask", "Costume"),
+        WordPair("Entertainment", "Party", "Event"),
+        WordPair("Entertainment", "Holiday", "Festival"),
+        WordPair("Entertainment", "Music", "Sound"),
+        WordPair("Entertainment", "Radio", "Podcast"),
+        WordPair("Entertainment", "Stream", "Broadcast"),
+        WordPair("Entertainment", "App", "Program"),
+        WordPair("Entertainment", "Hobby", "Pastime"),
+        WordPair("Entertainment", "Card Game", "Board Game"),
+        WordPair("Entertainment", "Dice", "Coin"),
+        WordPair("Entertainment", "Prize", "Trophy"),
+        WordPair("Science", "Atom", "Molecule"),
+        WordPair("Science", "Cell", "Organism"),
+        WordPair("Science", "Gene", "DNA"),
+        WordPair("Science", "Proton", "Electron"),
+        WordPair("Science", "Acid", "Base"),
+        WordPair("Science", "Solid", "Liquid"),
+        WordPair("Science", "Gas", "Vapor"),
+        WordPair("Science", "Energy", "Power"),
+        WordPair("Science", "Heat", "Light"),
+        WordPair("Science", "Sound", "Wave"),
+        WordPair("Science", "Space", "Vacuum"),
+        WordPair("Science", "Star", "Galaxy"),
+        WordPair("Science", "Planet", "Moon"),
+        WordPair("Science", "Gravity", "Force"),
+        WordPair("Science", "Speed", "Velocity"),
+        WordPair("Science", "Mass", "Weight"),
+        WordPair("Science", "Element", "Metal"),
+        WordPair("Science", "Oxygen", "Carbon"),
+        WordPair("Science", "Fossil", "Bone"),
+        WordPair("Science", "Evolution", "Growth"),
+        WordPair("Science", "Lab", "Clinic"),
+        WordPair("Science", "Microscope", "Telescope"),
+        WordPair("Science", "Test Tube", "Beaker"),
+        WordPair("Science", "Data", "Chart"),
+        WordPair("Science", "Virus", "Bacteria"),
+        WordPair("Science", "Brain", "Mind"),
+        WordPair("Science", "Heart", "Pulse"),
+        WordPair("Science", "Muscle", "Nerve"),
+        WordPair("Science", "Bone", "Skeleton"),
+        WordPair("Technology", "Phone", "Mobile"),
+        WordPair("Technology", "Laptop", "Desktop"),
+        WordPair("Technology", "Mouse", "Trackpad"),
+        WordPair("Technology", "Screen", "Monitor"),
+        WordPair("Technology", "Cable", "Wire"),
+        WordPair("Technology", "Battery", "Power"),
+        WordPair("Technology", "Internet", "Web"),
+        WordPair("Technology", "Wifi", "Bluetooth"),
+        WordPair("Technology", "App", "Software"),
+        WordPair("Technology", "File", "Folder"),
+        WordPair("Technology", "Data", "Code"),
+        WordPair("Technology", "Password", "Login"),
+        WordPair("Technology", "Search", "Find"),
+        WordPair("Technology", "Email", "Message"),
+        WordPair("Technology", "Chat", "Call"),
+        WordPair("Technology", "Camera", "Lens"),
+        WordPair("Technology", "Video", "Audio"),
+        WordPair("Technology", "Printer", "Scanner"),
+        WordPair("Technology", "Remote", "Controller"),
+        WordPair("Technology", "Robot", "Machine"),
+        WordPair("Technology", "Chip", "Processor"),
+        WordPair("Technology", "Memory", "Storage"),
+        WordPair("Technology", "Server", "Cloud"),
+        WordPair("Technology", "Laser", "Beam"),
+        WordPair("Technology", "Satellite", "Drone"),
+        WordPair("Technology", "Virtual", "Digital"),
+        WordPair("Technology", "Online", "Offline"),
+        WordPair("Technology", "User", "Admin"),
+        WordPair("Technology", "System", "Network")
     )
-
-    private const val NEIGHBOR_WINDOW = 3
-    private const val MAX_PAIRS_PER_GROUP = 16
-    private const val MAX_WORD_REUSE_PER_GROUP = 5
-    private const val CATEGORY_CONTEXT_WEIGHT = 0.70
-    private const val GROUP_CONTEXT_WEIGHT = 0.35
-    const val MIN_PAIR_QUALITY: Double = 0.46
-
-    private data class ScoredPair(val pair: WordPair, val score: Double)
-
-    private val categoryGroupLookup: Map<String, List<Set<String>>> = categoryWordGroups.mapValues { (_, groups) ->
-        groups.map { group -> group.map { normalizedWord(it) }.toSet() }
-    }
-
-    private val contextualWordVectors: Map<String, Map<String, Double>> = buildContextualWordVectors()
-
-    private fun normalizedWord(value: String): String = value.trim().lowercase()
-
-    private fun canonicalKey(pair: WordPair): String {
-        val a = normalizedWord(pair.civilianWord)
-        val b = normalizedWord(pair.undercoverWord)
-        val ordered = if (a <= b) "$a|$b" else "$b|$a"
-        return "${pair.category.lowercase()}|$ordered"
-    }
-
-    private fun bigramVector(value: String): Map<String, Double> {
-        val normalized = normalizedWord(value).filter { it.isLetterOrDigit() }
-        if (normalized.length < 2) return emptyMap()
-        val grams = mutableMapOf<String, Double>()
-        for (i in 0 until normalized.length - 1) {
-            val gram = normalized.substring(i, i + 2)
-            grams[gram] = (grams[gram] ?: 0.0) + 1.0
-        }
-        return grams
-    }
-
-    private fun cosineSimilarity(left: Map<String, Double>, right: Map<String, Double>): Double {
-        if (left.isEmpty() || right.isEmpty()) return 0.0
-        val dot = left.entries.sumOf { (key, value) -> value * (right[key] ?: 0.0) }
-        val leftNorm = sqrt(left.values.sumOf { it * it })
-        val rightNorm = sqrt(right.values.sumOf { it * it })
-        if (leftNorm == 0.0 || rightNorm == 0.0) return 0.0
-        return dot / (leftNorm * rightNorm)
-    }
-
-    private fun rootOverlap(left: String, right: String): Double {
-        val a = normalizedWord(left).filter { it.isLetterOrDigit() }
-        val b = normalizedWord(right).filter { it.isLetterOrDigit() }
-        if (a.isEmpty() || b.isEmpty()) return 0.0
-
-        var commonPrefix = 0
-        val minLength = minOf(a.length, b.length)
-        while (commonPrefix < minLength && a[commonPrefix] == b[commonPrefix]) {
-            commonPrefix++
-        }
-
-        return sqrt(commonPrefix.toDouble() / minLength.toDouble())
-    }
-
-    private fun addVectorWeight(
-        vectors: MutableMap<String, MutableMap<String, Double>>,
-        word: String,
-        feature: String,
-        weight: Double
-    ) {
-        val vector = vectors.getOrPut(word) { mutableMapOf() }
-        vector[feature] = (vector[feature] ?: 0.0) + weight
-    }
-
-    private fun buildContextualWordVectors(): Map<String, Map<String, Double>> {
-        val vectors = mutableMapOf<String, MutableMap<String, Double>>()
-        categoryWordGroups.forEach { (category, groups) ->
-            val categoryToken = "category:${category.lowercase()}"
-            groups.forEachIndexed { groupIndex, rawWords ->
-                val words = rawWords.map(::normalizedWord).filter { it.isNotBlank() }.distinct()
-                val groupToken = "group:${category.lowercase()}:$groupIndex"
-                words.forEachIndexed { index, word ->
-                    addVectorWeight(vectors, word, categoryToken, CATEGORY_CONTEXT_WEIGHT)
-                    addVectorWeight(vectors, word, groupToken, GROUP_CONTEXT_WEIGHT)
-
-                    for (offset in 1..NEIGHBOR_WINDOW) {
-                        val weight = (NEIGHBOR_WINDOW - offset + 1).toDouble() / NEIGHBOR_WINDOW
-                        words.getOrNull(index - offset)?.let { neighbor ->
-                            addVectorWeight(vectors, word, "neighbor:$neighbor", weight)
-                        }
-                        words.getOrNull(index + offset)?.let { neighbor ->
-                            addVectorWeight(vectors, word, "neighbor:$neighbor", weight)
-                        }
-                    }
-                }
-            }
-        }
-
-        return vectors.mapValues { (_, vector) -> vector.toMap() }
-    }
-
-    internal fun lexicalSimilarity(first: String, second: String): Double {
-        val cosine = cosineSimilarity(bigramVector(first), bigramVector(second))
-        val root = rootOverlap(first, second)
-        return (0.75 * cosine + 0.25 * root).coerceIn(0.0, 1.0)
-    }
-
-    internal fun contextualSimilarity(first: String, second: String): Double {
-        val left = contextualWordVectors[normalizedWord(first)] ?: return 0.0
-        val right = contextualWordVectors[normalizedWord(second)] ?: return 0.0
-        return cosineSimilarity(left, right).coerceIn(0.0, 1.0)
-    }
-
-    private fun isSameSemanticGroup(pair: WordPair): Boolean {
-        val groups = categoryGroupLookup[pair.category] ?: return false
-        val a = normalizedWord(pair.civilianWord)
-        val b = normalizedWord(pair.undercoverWord)
-        return groups.any { group -> a in group && b in group }
-    }
-
-    internal fun qualityScore(pair: WordPair): Double {
-        val contextual = contextualSimilarity(pair.civilianWord, pair.undercoverWord)
-        val lexical = lexicalSimilarity(pair.civilianWord, pair.undercoverWord)
-        val semanticBonus = if (isSameSemanticGroup(pair)) 1.0 else 0.0
-        val left = pair.civilianWord.filter { it.isLetterOrDigit() }.length
-        val right = pair.undercoverWord.filter { it.isLetterOrDigit() }.length
-        val lengthBalance = if (maxOf(left, right) == 0) {
-            0.0
-        } else {
-            1.0 - (kotlin.math.abs(left - right).toDouble() / maxOf(left, right))
-        }
-
-        return (0.68 * contextual + 0.20 * lexical + 0.07 * lengthBalance + 0.05 * semanticBonus)
-            .coerceIn(0.0, 1.0)
-    }
-
-    private fun rankedPairsForGroup(category: String, words: List<String>): List<ScoredPair> {
-        if (words.size < 2) return emptyList()
-        return buildList {
-            for (i in words.indices) {
-                for (j in i + 1 until words.size) {
-                    val pair = WordPair(
-                        category = category,
-                        civilianWord = words[i],
-                        undercoverWord = words[j]
-                    )
-                    add(ScoredPair(pair = pair, score = qualityScore(pair)))
-                }
-            }
-        }.sortedByDescending { it.score }
-    }
-
-    private fun selectPairsForGroup(rankedPairs: List<ScoredPair>): List<WordPair> {
-        val selected = mutableListOf<WordPair>()
-        val selectedKeys = mutableSetOf<String>()
-        val usageByWord = mutableMapOf<String, Int>()
-
-        rankedPairs.forEach { candidate ->
-            if (selected.size >= MAX_PAIRS_PER_GROUP || candidate.score < MIN_PAIR_QUALITY) return@forEach
-            val left = normalizedWord(candidate.pair.civilianWord)
-            val right = normalizedWord(candidate.pair.undercoverWord)
-            if ((usageByWord[left] ?: 0) >= MAX_WORD_REUSE_PER_GROUP) return@forEach
-            if ((usageByWord[right] ?: 0) >= MAX_WORD_REUSE_PER_GROUP) return@forEach
-
-            val key = canonicalKey(candidate.pair)
-            if (selectedKeys.add(key)) {
-                selected += candidate.pair
-                usageByWord[left] = (usageByWord[left] ?: 0) + 1
-                usageByWord[right] = (usageByWord[right] ?: 0) + 1
-            }
-        }
-
-        if (selected.size < MAX_PAIRS_PER_GROUP) {
-            rankedPairs.forEach { candidate ->
-                if (selected.size >= MAX_PAIRS_PER_GROUP || candidate.score < MIN_PAIR_QUALITY) return@forEach
-                val key = canonicalKey(candidate.pair)
-                if (selectedKeys.add(key)) {
-                    selected += candidate.pair
-                }
-            }
-        }
-
-        return selected
-    }
-
-    val allPairs: List<WordPair> = categoryWordGroups.flatMap { (category, groups) ->
-        groups.flatMap { rawWords ->
-            val words = rawWords.map { it.trim() }.filter { it.isNotBlank() }.distinct()
-            val ranked = rankedPairsForGroup(category = category, words = words)
-            selectPairsForGroup(ranked)
-        }
-    }
-        .filter {
-            it.civilianWord.isNotBlank() &&
-                it.undercoverWord.isNotBlank() &&
-                !it.civilianWord.equals(it.undercoverWord, ignoreCase = true) &&
-                qualityScore(it) >= MIN_PAIR_QUALITY
-        }
-        .distinctBy(::canonicalKey)
 }
