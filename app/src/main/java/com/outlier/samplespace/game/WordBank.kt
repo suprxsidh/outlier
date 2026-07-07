@@ -71,6 +71,74 @@ object WordBank {
         "Technology" to listOf(
             listOf("Browser", "Website", "App", "Server", "Database", "Cloud", "Firewall", "Password"),
             listOf("Robot", "Drone", "Sensor", "Processor", "Algorithm", "Code", "Console", "Router")
+        ),
+        "Fruits" to listOf(
+            listOf("Apple", "Banana", "Orange", "Grape", "Mango", "Pineapple", "Watermelon", "Papaya"),
+            listOf("Strawberry", "Blueberry", "Raspberry", "Blackberry", "Cherry", "Peach", "Plum", "Apricot")
+        ),
+        "Vegetables" to listOf(
+            listOf("Carrot", "Potato", "Onion", "Garlic", "Broccoli", "Cauliflower", "Cabbage", "Spinach"),
+            listOf("Cucumber", "Zucchini", "Pumpkin", "Eggplant", "Radish", "Turnip", "Beetroot", "Celery")
+        ),
+        "Vehicles" to listOf(
+            listOf("Car", "Truck", "Van", "Motorcycle", "Scooter", "Bicycle", "Skateboard", "Rickshaw"),
+            listOf("Sedan", "Coupe", "Convertible", "Hatchback", "Pickup", "Minivan", "Jeep", "Wagon")
+        ),
+        "Clothing" to listOf(
+            listOf("Shirt", "Jacket", "Sweater", "Hoodie", "Blazer", "Vest", "Cardigan", "Overcoat"),
+            listOf("Jeans", "Shorts", "Skirt", "Leggings", "Trousers", "Overalls", "Joggers", "Slacks")
+        ),
+        "Body Parts" to listOf(
+            listOf("Elbow", "Wrist", "Knee", "Ankle", "Shoulder", "Hip", "Shin", "Thigh"),
+            listOf("Eyebrow", "Eyelash", "Cheek", "Chin", "Forehead", "Jaw", "Nostril", "Earlobe")
+        ),
+        "Furniture" to listOf(
+            listOf("Bookshelf", "Wardrobe", "Dresser", "Nightstand", "Cupboard", "Sideboard", "Hutch", "Credenza"),
+            listOf("Recliner", "Ottoman", "Bench", "Stool", "Loveseat", "Rocking Chair", "Beanbag", "Hammock")
+        ),
+        "Kitchen Tools" to listOf(
+            listOf("Spatula", "Whisk", "Ladle", "Tongs", "Colander", "Grater", "Peeler", "Skimmer"),
+            listOf("Blender", "Toaster", "Kettle", "Mixer", "Microwave", "Griddle", "Fryer", "Steamer")
+        ),
+        "Sea Creatures" to listOf(
+            listOf("Shark", "Dolphin", "Whale", "Octopus", "Squid", "Jellyfish", "Stingray", "Seahorse"),
+            listOf("Crab", "Lobster", "Shrimp", "Clam", "Oyster", "Starfish", "Barnacle", "Sea Urchin")
+        ),
+        "Birds" to listOf(
+            listOf("Eagle", "Hawk", "Falcon", "Owl", "Vulture", "Osprey", "Kite", "Kestrel"),
+            listOf("Sparrow", "Robin", "Finch", "Canary", "Swallow", "Wren", "Warbler", "Nightingale")
+        ),
+        "Insects" to listOf(
+            listOf("Ant", "Bee", "Wasp", "Hornet", "Beetle", "Locust", "Grasshopper", "Cicada"),
+            listOf("Butterfly", "Moth", "Dragonfly", "Ladybug", "Firefly", "Mosquito", "Gnat", "Termite")
+        ),
+        "Toys and Games" to listOf(
+            listOf("Yoyo", "Boomerang", "Marble", "Spinning Top", "Slinky", "Jump Rope", "Pinwheel", "Kaleidoscope"),
+            listOf("Chess", "Checkers", "Dominoes", "Backgammon", "Scrabble", "Monopoly", "Battleship", "Jenga")
+        ),
+        "Desserts" to listOf(
+            listOf("Ice Cream", "Sorbet", "Gelato", "Popsicle", "Frozen Yogurt", "Sundae", "Snow Cone", "Ice Pop"),
+            listOf("Tart", "Custard", "Pudding", "Trifle", "Mousse", "Fudge", "Toffee", "Caramel")
+        ),
+        "Camping" to listOf(
+            listOf("Tent", "Sleeping Bag", "Compass", "Lantern", "Canteen", "Hatchet", "Tarp", "Firewood"),
+            listOf("Hiking", "Fishing", "Rock Climbing", "Kayaking", "Canoeing", "Bonfire", "Stargazing", "Foraging")
+        ),
+        "Emotions" to listOf(
+            listOf("Joy", "Excitement", "Pride", "Gratitude", "Relief", "Delight", "Contentment", "Enthusiasm"),
+            listOf("Anger", "Fear", "Sadness", "Jealousy", "Anxiety", "Frustration", "Disappointment", "Loneliness")
+        ),
+        "Superpowers" to listOf(
+            listOf("Flight", "Invisibility", "Telepathy", "Teleportation", "Super Strength", "Time Travel", "Shape Shifting", "Mind Control"),
+            listOf("Fire Control", "Ice Control", "Lightning Control", "Wind Control", "Water Control", "Earth Control", "Light Control", "Shadow Control")
+        ),
+        "Subjects" to listOf(
+            listOf("Mathematics", "History", "Geography", "Chemistry", "Biology", "Physics", "Literature", "Economics"),
+            listOf("Painting", "Sculpture", "Photography", "Ceramics", "Calligraphy", "Drama", "Choir", "Debate")
+        ),
+        "Music Genres" to listOf(
+            listOf("Jazz", "Blues", "Reggae", "Country", "Folk", "Classical", "Opera", "Gospel"),
+            listOf("Hip Hop", "Rock", "Pop", "Metal", "Punk", "Disco", "Techno", "Funk")
         )
     )
 

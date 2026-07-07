@@ -12,6 +12,25 @@ class WordBankTest {
     }
 
     @Test
+    fun generatedPairs_hasNoDuplicatePairs() {
+        fun canonicalKey(pair: WordPair): String {
+            val a = pair.civilianWord.trim().lowercase()
+            val b = pair.undercoverWord.trim().lowercase()
+            val ordered = if (a <= b) "$a|$b" else "$b|$a"
+            return "${pair.category.trim().lowercase()}|$ordered"
+        }
+
+        val keys = WordBank.allPairs.map(::canonicalKey)
+        assertEquals(keys.size, keys.toSet().size)
+    }
+
+    @Test
+    fun generatedPairs_everyPairHasMatchingCategoryWords() {
+        val invalid = WordBank.allPairs.any { it.category.isBlank() }
+        assertTrue(!invalid)
+    }
+
+    @Test
     fun generatedPairs_haveNoBlankOrEqualWords() {
         val invalid = WordBank.allPairs.any {
             it.civilianWord.isBlank() ||
