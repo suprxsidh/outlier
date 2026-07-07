@@ -145,12 +145,14 @@ fun determineWinner(
 
     val civilians = aliveRoles.count { it == Role.CIVILIAN }
     val undercovers = aliveRoles.count { it == Role.UNDERCOVER }
-    val mrWhiteAlive = aliveRoles.count { it == Role.MR_WHITE } > 0
+    val mrWhiteAliveCount = aliveRoles.count { it == Role.MR_WHITE }
 
-    if (!mrWhiteAlive && undercovers == 0) {
+    if (mrWhiteAliveCount == 0 && undercovers == 0) {
         return Winner.CIVILIANS
     }
-    if (civilians == undercovers) {
+    // Outliers (undercovers + Mr. White) win once they reach numeric parity with
+    // civilians, matching how the full non-civilian faction is tallied together.
+    if (civilians <= undercovers + mrWhiteAliveCount) {
         return Winner.OUTLIERS
     }
     return Winner.NONE

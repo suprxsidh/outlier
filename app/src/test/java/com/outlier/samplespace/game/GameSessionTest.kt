@@ -123,7 +123,7 @@ class GameSessionTest {
         state = session.confirmElimination(state)
 
         assertEquals(GamePhase.POST_ELIMINATION_ANNOUNCEMENT, state.phase)
-        state = session.continueAfterAnnouncement(state)
+        state = session.continueAfterAnnouncement(state).state
 
         assertEquals(GamePhase.MR_WHITE_GUESS, state.phase)
         assertEquals(mrWhiteName, state.pendingMrWhitePlayer)
@@ -145,7 +145,7 @@ class GameSessionTest {
         val civilian = state.assignments.first { it.role == Role.CIVILIAN }.playerName
         state = session.selectEliminationTarget(state, civilian)
         state = session.confirmElimination(state)
-        state = session.continueAfterAnnouncement(state)
+        state = session.continueAfterAnnouncement(state).state
 
         assertEquals(GamePhase.CLUE_ROUND, state.phase)
         assertEquals(2, state.roundNumber)
@@ -167,7 +167,7 @@ class GameSessionTest {
         val civilian = state.assignments.first { it.role == Role.CIVILIAN }.playerName
         state = session.selectEliminationTarget(state, civilian)
         state = session.confirmElimination(state)
-        state = session.continueAfterAnnouncement(state)
+        state = session.continueAfterAnnouncement(state).state
 
         assertEquals(GamePhase.GAME_OVER, state.phase)
         assertEquals(Winner.OUTLIERS, state.winner)
@@ -207,9 +207,9 @@ class GameSessionTest {
         state = session.beginElimination(state)
         state = session.selectEliminationTarget(state, mrWhiteName)
         state = session.confirmElimination(state)
-        state = session.continueAfterAnnouncement(state)
+        state = session.continueAfterAnnouncement(state).state
 
-        state = session.submitMrWhiteGuess(state, "Pizza")
+        state = session.submitMrWhiteGuess(state, "Pizza").state
 
         assertEquals(GamePhase.GAME_OVER, state.phase)
         assertEquals(Winner.MR_WHITE, state.winner)

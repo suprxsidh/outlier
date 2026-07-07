@@ -298,11 +298,7 @@ class OutlierViewModel : ViewModel() {
     fun resetToSetup() {
         val current = _uiState.value
         _uiState.value = OutlierUiState(
-            setup = SetupState(
-                playerCount = current.setup.playerCount,
-                playerNames = current.setup.playerNames,
-                countPartsEnabled = current.setup.countPartsEnabled
-            ),
+            setup = SetupState(countPartsEnabled = current.setup.countPartsEnabled),
             civilianScore = current.civilianScore,
             outlierScore = current.outlierScore
         )
