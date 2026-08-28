@@ -1,0 +1,19 @@
+Outlier is a fully offline, pass-and-play social deduction party game for one device and a group of friends, inspired by undercover-style word games.
+
+Every round, most players secretly get the same word while a smaller group of undercovers get a related-but-different word, and (optionally) one Mr. White gets no word at all. Players take turns giving a one-word clue about their secret word, then vote to eliminate whoever seems like the odd one out. Civilians win by rooting out every undercover and Mr. White; the undercovers win by blending in; Mr. White can steal the win with a lucky guess of the civilian word after being caught.
+
+Features:
+
+- Single-device pass-and-play gameplay, no accounts or internet required
+- Configurable player count from 4 to 15
+- Configurable number of undercovers and Mr. White players
+- Defaults to 7 players, 2 undercovers, and 1 Mr. White for a quick setup
+- Randomized secret pick order, with the first player guaranteed not to be Mr. White
+- Post-elimination announcements reveal only the eliminated role and remaining role counts, keeping the rest of the table guessing
+- Mr. White gets one guess at the civilian word when eliminated
+- Score tracking across rounds
+- Optional clue-parts counter to help keep turns organized
+- A large, curated word bank spanning dozens of family-friendly categories, with smart pair-quality matching so undercover words stay related but distinct
+- All game state stays on-device; nothing is uploaded or shared
+
+Outlier is free and open source software (FOSS) released under the MIT license, with no ads, no trackers, and no data collection.
