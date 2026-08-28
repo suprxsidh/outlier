@@ -8,8 +8,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.outlier.samplespace.R
 
-private val DisplayFamily = FontFamily(Font(R.font.nunito_bold))
-private val BodyFamily = FontFamily(Font(R.font.nunito_regular))
+val DisplayFamily = FontFamily(Font(R.font.nunito_bold, FontWeight.Bold))
+private val DisplaySemiBoldFamily = FontFamily(Font(R.font.nunito_semibold, FontWeight.SemiBold))
+private val BodyFamily = FontFamily(Font(R.font.nunito_regular, FontWeight.Normal))
+private val BodySemiBoldFamily = FontFamily(Font(R.font.nunito_semibold, FontWeight.SemiBold))
 
 val Typography = Typography(
     headlineLarge = TextStyle(
@@ -20,20 +22,20 @@ val Typography = Typography(
         letterSpacing = 0.3.sp
     ),
     headlineMedium = TextStyle(
-        fontFamily = DisplayFamily,
+        fontFamily = DisplaySemiBoldFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 28.sp,
         lineHeight = 32.sp,
         letterSpacing = 0.2.sp
     ),
     titleLarge = TextStyle(
-        fontFamily = DisplayFamily,
+        fontFamily = DisplaySemiBoldFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 23.sp,
         lineHeight = 30.sp
     ),
     titleMedium = TextStyle(
-        fontFamily = BodyFamily,
+        fontFamily = BodySemiBoldFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 18.sp,
         lineHeight = 24.sp,
@@ -52,7 +54,7 @@ val Typography = Typography(
         lineHeight = 20.sp
     ),
     labelLarge = TextStyle(
-        fontFamily = BodyFamily,
+        fontFamily = BodySemiBoldFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
         lineHeight = 18.sp,

@@ -55,6 +55,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import com.outlier.samplespace.ui.theme.DisplayFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -866,6 +867,7 @@ private fun AnnouncementScreen(
                 Text(
                     text = "Case Update",
                     style = MaterialTheme.typography.headlineMedium,
+                    fontFamily = DisplayFamily,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
@@ -909,6 +911,7 @@ private fun CountLine(label: String, count: Int) {
         Text(
             text = count.toString(),
             style = MaterialTheme.typography.titleMedium,
+            fontFamily = DisplayFamily,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.tertiary
         )

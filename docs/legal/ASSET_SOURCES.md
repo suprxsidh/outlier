@@ -2,14 +2,6 @@
 
 This project includes visual and font assets from third-party sources with permissive licenses.
 
-## Kenney UI Pack
-
-- Source: https://kenney.nl/assets/ui-pack
-- License: CC0 1.0
-- Files used:
-  - `app/src/main/res/font/kenney_future.ttf`
-  - `app/src/main/res/font/kenney_future_narrow.ttf`
-
 ## Nunito
 
 - Source: https://github.com/google/fonts/tree/main/ofl/nunito (Google Fonts, upstream: https://github.com/googlefonts/nunito)
