@@ -49,9 +49,9 @@ private fun defaultNames(count: Int): List<String> =
 
 private fun fallbackName(index: Int): String = "Player ${index + 1}"
 
-class OutlierViewModel : ViewModel() {
+class OutlierViewModel(private val setupStore: SetupStore? = null) : ViewModel() {
     private val session = GameSession()
-    private val _uiState = MutableStateFlow(OutlierUiState())
+    private val _uiState = MutableStateFlow(OutlierUiState(setup = setupStore?.load() ?: SetupState()))
     val uiState: StateFlow<OutlierUiState> = _uiState.asStateFlow()
 
     val categories: List<String> = listOf("All") + WordBank.allPairs.map { it.category }.distinct().sorted()
@@ -195,6 +195,7 @@ class OutlierViewModel : ViewModel() {
             return
         }
 
+        setupStore?.save(setup)
         val pair = pickPair(setup.selectedCategory)
         val state = session.startGame(names, config, pair, setup.countPartsEnabled)
         _uiState.value = _uiState.value.copy(
@@ -298,7 +299,7 @@ class OutlierViewModel : ViewModel() {
     fun resetToSetup() {
         val current = _uiState.value
         _uiState.value = OutlierUiState(
-            setup = SetupState(countPartsEnabled = current.setup.countPartsEnabled),
+            setup = current.setup.copy(errorMessage = null, helperMessage = null),
             civilianScore = current.civilianScore,
             outlierScore = current.outlierScore
         )

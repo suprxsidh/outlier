@@ -57,8 +57,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import com.outlier.samplespace.ui.theme.DisplayFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.outlier.samplespace.game.AssignedRole
 import com.outlier.samplespace.game.EliminationAnnouncement
 import com.outlier.samplespace.game.GamePhase
@@ -66,7 +69,11 @@ import com.outlier.samplespace.game.GameState
 import com.outlier.samplespace.game.Role
 
 @Composable
-fun OutlierApp(viewModel: OutlierViewModel = viewModel()) {
+fun OutlierApp() {
+    val context = LocalContext.current.applicationContext
+    val viewModel: OutlierViewModel = viewModel(factory = viewModelFactory {
+        initializer { OutlierViewModel(PrefsSetupStore(context)) }
+    })
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 

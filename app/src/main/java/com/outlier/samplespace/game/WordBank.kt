@@ -149,6 +149,79 @@ object WordBank {
     private const val GROUP_CONTEXT_WEIGHT = 0.35
     const val MIN_PAIR_QUALITY: Double = 0.46
 
+    // Hand-reviewed pairs whose words are too unrelated to make a fair round (word1/word2, lowercase).
+    private val mismatchedPairs: Set<String> = setOf(
+        "downpour/frost",
+        "office/gymnasium",
+        "marble/jump rope",
+        "photography/drama",
+        "teacher/locker",
+        "table/blanket",
+        "sunset/thunder",
+        "rainbow/thunder",
+        "rainbow/lightning",
+        "breeze/lightning",
+        "itinerary/checkpoint",
+        "tarp/firewood",
+        "compass/hatchet",
+        "hatchet/tarp",
+        "suitcase/bottle",
+        "headphones/webcam",
+        "platform/ticket counter",
+        "pinwheel/kaleidoscope",
+        "quiz/syllabus",
+        "project/quiz",
+        "surfing/archery",
+        "skateboard/rickshaw",
+        "escalator/corridor",
+        "laboratory/cafeteria",
+        "auditorium/library room",
+        "conference room/gymnasium",
+        "bottle/notebook",
+        "umbrella/pencil",
+        "locker/graduation",
+        "locker/timetable",
+        "locker/diploma",
+        "blanket/lamp",
+        "documentary/festival",
+        "card game/story",
+        "fishing/bonfire",
+        "cruise/shuttle",
+        "visa/checkpoint",
+        "snowy/humid",
+        "ocean/meadow",
+        "lake/meadow",
+        "sensor/console",
+        "server/password",
+        "firewall/password",
+        "literature/economics",
+        "geography/physics",
+        "choir/debate",
+        "monsoon/heatwave",
+        "jaw/nostril",
+        "nostril/earlobe",
+        "mouse/headphones",
+        "phone/keyboard",
+        "stool/hammock",
+        "beanbag/hammock",
+        "beetroot/celery",
+        "garlic/spinach",
+        "eggplant/turnip",
+        "pumpkin/turnip",
+        "dentist/therapist",
+        "metal/funk",
+        "reggae/classical",
+        "folk/classical",
+        "rabbit/turtle",
+        "lightning/mist",
+        "skirt/overalls",
+        "project/syllabus",
+        "workbook/essay"
+    ).flatMap { listOf(it, it.split("/").reversed().joinToString("/")) }.toSet()
+
+    private fun isMismatched(pair: WordPair): Boolean =
+        "${normalizedWord(pair.civilianWord)}/${normalizedWord(pair.undercoverWord)}" in mismatchedPairs
+
     private data class ScoredPair(val pair: WordPair, val score: Double)
 
     private val categoryGroupLookup: Map<String, List<Set<String>>> = categoryWordGroups.mapValues { (_, groups) ->
@@ -292,6 +365,7 @@ object WordBank {
         val selected = mutableListOf<WordPair>()
         val selectedKeys = mutableSetOf<String>()
         val usageByWord = mutableMapOf<String, Int>()
+        val rankedPairs = rankedPairs.filterNot { isMismatched(it.pair) }
 
         rankedPairs.forEach { candidate ->
             if (selected.size >= MAX_PAIRS_PER_GROUP || candidate.score < MIN_PAIR_QUALITY) return@forEach

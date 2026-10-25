@@ -19,7 +19,7 @@ class OutlierViewModelTest {
     }
 
     @Test
-    fun resetToSetup_restoresSevenTwoOne() {
+    fun resetToSetup_keepsPlayedCounts() {
         val vm = OutlierViewModel()
         vm.updatePlayerCount(10)
         vm.updateUndercoverCount(3)
@@ -28,10 +28,10 @@ class OutlierViewModelTest {
         vm.resetToSetup()
 
         val setup = vm.uiState.value.setup
-        assertEquals(7, setup.playerCount)
-        assertEquals(2, setup.undercoverCount)
-        assertEquals(1, setup.mrWhiteCount)
-        assertEquals(7, setup.playerNames.size)
+        assertEquals(10, setup.playerCount)
+        assertEquals(3, setup.undercoverCount)
+        assertEquals(2, setup.mrWhiteCount)
+        assertEquals(10, setup.playerNames.size)
     }
 
     @Test
@@ -62,5 +62,33 @@ class OutlierViewModelTest {
         assertTrue("Player 1" in assignedNames)
         assertTrue("Player 2" in assignedNames)
         assertTrue("Alex" in assignedNames)
+    }
+
+    @Test
+    fun resetToSetup_keepsNamesAndSetup() {
+        val vm = OutlierViewModel()
+        vm.updatePlayerName(0, "Alex")
+        vm.updatePlayerName(1, "Sam")
+        vm.startGame()
+
+        vm.resetToSetup()
+
+        assertEquals(listOf("Alex", "Sam"), vm.uiState.value.setup.playerNames.take(2))
+    }
+
+    @Test
+    fun startGame_savesSetupAndNewViewModelLoadsIt() {
+        val store = object : SetupStore {
+            var saved: SetupState? = null
+            override fun load() = saved
+            override fun save(setup: SetupState) { saved = setup }
+        }
+        val vm = OutlierViewModel(store)
+        vm.updatePlayerName(0, "Alex")
+        vm.startGame()
+
+        val reloaded = OutlierViewModel(store)
+
+        assertEquals("Alex", reloaded.uiState.value.setup.playerNames[0])
     }
 }
